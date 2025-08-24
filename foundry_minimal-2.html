@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Foundry Initiative</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Core Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a1a1a;
+      background: #ffffff;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+    
+    /* Typography */
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+    
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    
+    nav .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+    
+    .logo {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #1a1a1a;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: #1a1a1a;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 400;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #1a1a1a;
+      transition: width 0.3s ease;
+    }
+    
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      text-align: center;
+      padding: 0 2rem;
+      margin-top: 80px;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      line-height: 1.1;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      color: #6c757d;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-primary {
+      background: #1a1a1a;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #333;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: #1a1a1a;
+      border: 1px solid #e9ecef;
+    }
+    
+    .btn-secondary:hover {
+      background: #1a1a1a;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Sections */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      color: #1a1a1a;
+    }
+    
+    /* About Section */
+    .about-content {
+      display: grid;
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+    
+    .about-text {
+      font-size: 1.1rem;
+      color: #495057;
+      line-height: 1.8;
+    }
+    
+    .about-text strong {
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+    
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+    
+    .value-card {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-radius: 12px;
+      background: #f8f9fa;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .value-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .value-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1a1a1a;
+    }
+    
+    .value-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    /* Programs Section */
+    .programs-grid {
+      display: grid;
+      gap: 2rem;
+    }
+    
+    .program-card {
+      padding: 2.5rem;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .program-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .program-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+    }
+    
+    .program-description {
+      color: #6c757d;
+      line-height: 1.7;
+    }
+    
+    /* Contact Section */
+    .contact {
+      background: #f8f9fa;
+      border-radius: 20px;
+      padding: 4rem 3rem;
+      margin: 4rem auto;
+    }
+    
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .contact-form input,
+    .contact-form textarea {
+      padding: 1rem 1.5rem;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .contact-form textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: #6c757d;
+      background: #f8f9fa;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .footer-brand {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+    }
+    
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .footer-nav a {
+      color: #6c757d;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-nav a:hover {
+      color: #1a1a1a;
+    }
+    
+    .footer-tagline {
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hero {
+        margin-top: 60px;
+        min-height: 80vh;
+      }
+      
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 250px;
+      }
+      
+      section {
+        padding: 4rem 1rem;
+      }
+      
+      .contact {
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+      }
+      
+      .values-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <div class="logo">Foundry Initiative</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#programs">Programs</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <h1>Shaping Leaders.<br>Forging Ideas.<br>Building the Future.</h1>
+      <p>The Foundry Initiative exists to create and refine people, ideas, and movements that impact communities for good.</p>
+      <div class="cta-buttons">
+        <a href="#contact" class="btn btn-primary">Join the Initiative</a>
+        <a href="#about" class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About Us</h2>
+    <div class="about-content">
+      <div class="about-text">
+        <p><strong>Our Story:</strong> The Foundry Initiative was founded on one simple belief: growth happens in the fire. Just as raw metal is refined into strength, people and ideas shine brightest when shaped, tested, and forged in community.</p>
+      </div>
+      <div class="about-text">
+        <p><strong>Our Vision:</strong> To ignite creativity, strengthen leaders, and shape communities through intentional development and bold action.</p>
+      </div>
+    </div>
+    
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🔥</div>
+        <div class="value-title">Creativity</div>
+        <div class="value-description">We spark new ideas and innovative solutions</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🛠️</div>
+        <div class="value-title">Resilience</div>
+        <div class="value-description">We shape strength through challenges</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <div class="value-title">Collaboration</div>
+        <div class="value-description">We forge together, never alone</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌍</div>
+        <div class="value-title">Impact</div>
+        <div class="value-description">We build with purpose for lasting change</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="programs">
+    <h2>What We Do</h2>
+    <div class="programs-grid">
+      <div class="program-card">
+        <div class="program-title">Leadership Development</div>
+        <div class="program-description">Training and mentoring the next generation of leaders through comprehensive programs that build confidence, vision, and practical skills.</div>
+      </div>
+      <div class="program-card">
+        <div class="program-title">Innovation Labs</div>
+        <div class="program-description">Workshops and collaborative spaces where ideas are refined into real solutions that address community challenges.</div>
+      </div>
+      <div class="program-card">
+        <div class="program-title">Community Projects</div>
+        <div class="program-description">Hands-on initiatives that bring people together to make a tangible difference in their neighborhoods and beyond.</div>
+      </div>
+      <div class="program-card">
+        <div class="program-title">Creative Residency</div>
+        <div class="program-description">A dedicated space for artists, thinkers, and builders to create, collaborate, and share their transformative work.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <h2>Let's Build Together</h2>
+    <form class="contact-form">
+      <div class="form-group">
+        <input type="text" placeholder="Your Name" required>
+      </div>
+      <div class="form-group">
+        <input type="email" placeholder="Email Address" required>
+      </div>
+      <div class="form-group">
+        <textarea placeholder="Tell us about your ideas or how you'd like to get involved..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+  </section>
+
+  <footer>
+    <div class="footer-brand">Foundry Initiative</div>
+    <nav class="footer-nav">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#programs">Programs</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="footer-tagline">Forging ideas. Shaping people. Building the future.</div>
+  </footer>
+
+</body>
+</html>

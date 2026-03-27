@@ -3,840 +3,908 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Foundry Initiative</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Foundry Initiative — Technology for Mission-Driven Organizations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* Core Reset & Base */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --orange: #f97316;
+      --orange-light: #fb923c;
+      --orange-dim: rgba(249, 115, 22, 0.15);
+      --dark: #0c0a09;
+      --dark-2: #1c1917;
+      --dark-3: #292524;
+      --warm-white: #fafaf9;
+      --slate: #78716c;
+      --slate-light: #a8a29e;
+      --border: rgba(255,255,255,0.08);
     }
-    
-    html {
-      scroll-behavior: smooth;
-    }
-    
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #0a0a0a;
+      color: var(--dark);
       background: #ffffff;
       line-height: 1.7;
       font-weight: 400;
       overflow-x: hidden;
     }
-    
-    /* Typography */
-    h1, h2, h3 {
-      font-weight: 700;
-      letter-spacing: -0.05em;
-    }
-    
-    /* Enhanced Navigation */
+
+    /* ── NAV ── */
     nav {
       position: fixed;
       top: 0;
       width: 100%;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
       z-index: 1000;
       padding: 1rem 0;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.3s ease;
     }
-    
     nav.scrolled {
-      background: rgba(255, 255, 255, 0.98);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-      padding: 0.75rem 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 0.65rem 0;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
     }
-    
-    nav .nav-container {
-      max-width: 1400px;
+    .nav-container {
+      max-width: 1200px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 2rem;
     }
-    
     .logo {
       font-weight: 800;
-      font-size: 1.4rem;
-      color: #0a0a0a;
-      transition: all 0.3s ease;
-      letter-spacing: -0.02em;
+      font-size: 1.2rem;
+      color: var(--dark);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--dark);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
     .nav-links {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.25rem;
       list-style: none;
       align-items: center;
     }
-    
     .nav-links a {
-      color: #4a5568;
+      color: #6b7280;
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      position: relative;
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
     }
-    
-    .nav-links a:hover {
-      background: rgba(0, 0, 0, 0.06);
-      color: #0a0a0a;
-      transform: translateY(-1px);
+    .nav-links a:hover { color: var(--dark); background: rgba(0,0,0,0.05); }
+    .nav-links .nav-cta {
+      background: var(--dark);
+      color: white !important;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      margin-left: 0.5rem;
     }
-    
-    .nav-links a.active {
-      background: rgba(0, 0, 0, 0.08);
-      color: #0a0a0a;
-      font-weight: 600;
-    }
-    
-    /* Mobile menu button */
+    .nav-links .nav-cta:hover { background: var(--dark-2) !important; transform: none; }
     .mobile-menu-btn {
       display: none;
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       cursor: pointer;
-      padding: 0.5rem;
-      color: #0a0a0a;
+      color: var(--dark);
+      padding: 0.25rem;
     }
-    
-    /* Hero Section with Modern Design */
+
+    /* ── HERO ── */
     .hero {
       min-height: 100vh;
+      background: var(--dark);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
       text-align: center;
-      padding: 0 2rem;
+      padding: 8rem 2rem 6rem;
       position: relative;
       overflow: hidden;
     }
-    
-    .hero::before {
-      content: '';
+    .hero-glow {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="0.5" fill="white" opacity="0.03"/><circle cx="80" cy="40" r="0.3" fill="white" opacity="0.02"/><circle cx="40" cy="80" r="0.4" fill="white" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-      animation: float 20s ease-in-out infinite;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(249,115,22,0.18) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
-    
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
     .hero-content {
-      max-width: 900px;
-      animation: fadeInUp 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+      max-width: 860px;
       position: relative;
       z-index: 2;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--orange-dim);
+      border: 1px solid rgba(249,115,22,0.3);
+      color: var(--orange-light);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; display: inline-block; }
     .hero h1 {
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      margin-bottom: 2rem;
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 900;
       color: white;
-      line-height: 1;
-      text-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.75rem;
     }
-
-    .hero h2 {
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      margin-bottom: 2rem;
-      color: white;
-      line-height: 1;
-      text-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      font-weight: 800;
+    .hero h1 em {
+      font-style: normal;
+      color: var(--orange);
     }
-    
     .hero p {
-      font-size: 1.4rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 3rem;
-      font-weight: 300;
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: rgba(255,255,255,0.6);
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      margin: 0 auto 3rem;
+      font-weight: 400;
+      line-height: 1.7;
     }
-    
-    .cta-buttons {
+    .hero-cta {
       display: flex;
-      gap: 1.5rem;
+      gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 3rem;
     }
-    
     .btn {
-      padding: 1.2rem 2.5rem;
+      padding: 0.9rem 2rem;
       border: none;
-      border-radius: 50px;
-      font-size: 1.1rem;
+      border-radius: 10px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.25s ease;
       text-decoration: none;
       display: inline-block;
-      position: relative;
-      overflow: hidden;
+      font-family: inherit;
     }
-    
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-    
-    .btn:hover::before {
-      left: 100%;
-    }
-    
     .btn-primary {
-      background: white;
-      color: #0a0a0a;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
-    }
-    
-    .btn-primary:hover {
-      background: #f8f9fa;
-      transform: translateY(-5px);
-      box-shadow: 0 30px 60px rgba(255, 255, 255, 0.2);
-    }
-    
-    .btn-secondary {
-      background: transparent;
+      background: var(--orange);
       color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
     }
-    
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.6);
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(249,115,22,0.35); }
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.15);
     }
-    
-    /* Floating Elements */
-    .floating-elements {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: 1;
+    .btn-ghost:hover { background: rgba(255,255,255,0.07); color: white; transform: translateY(-2px); }
+    .btn-dark {
+      background: var(--dark);
+      color: white;
     }
-    
-    .floating-element {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      animation: float 15s infinite ease-in-out;
+    .btn-dark:hover { background: var(--dark-2); transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
     }
-    
-    /* Enhanced Sections */
-    section {
-      padding: 8rem 2rem;
+    .stats-inner {
       max-width: 1200px;
       margin: 0 auto;
-      position: relative;
-    }
-    
-    section h2 {
-      font-size: 3.5rem;
-      margin-bottom: 4rem;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
       text-align: center;
-      color: #0a0a0a;
+    }
+    .stat-number {
+      font-size: 2rem;
       font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.04em;
+      display: block;
     }
-    
-    /* About Section with Glass Cards */
-    .about-content {
-      display: grid;
-      gap: 4rem;
-      margin-bottom: 6rem;
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--slate);
+      font-weight: 500;
+      margin-top: 0.25rem;
     }
-    
-    .about-text {
-      font-size: 1.25rem;
-      color: #4a5568;
-      line-height: 1.8;
-      text-align: center;
-      background: rgba(248, 250, 252, 0.8);
-      padding: 3rem;
-      border-radius: 24px;
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-    }
-    
-    .about-text:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.95);
-    }
-    
-    .about-text strong {
-      color: #0a0a0a;
-      font-weight: 700;
-    }
-    
-    .values-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 6rem;
-    }
-    
-    .value-card {
-      text-align: center;
-      padding: 3rem 2rem;
-      border-radius: 24px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,250,252,0.7));
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .value-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(135deg, #0a0a0a 0%, #4a5568 100%);
-    }
-    
-    .value-card:hover {
-      transform: translateY(-15px) scale(1.02);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
-      background: white;
-    }
-    
-    .value-icon {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
-      display: inline-block;
-      animation: bounce 2s infinite;
-    }
-    
-    .value-title {
-      font-weight: 700;
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #0a0a0a;
-    }
-    
-    .value-description {
-      color: #6a7280;
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-    
-    /* Modern Programs Section */
-    .programs-grid {
-      display: grid;
-      gap: 3rem;
-    }
-    
-    .program-card {
-      padding: 3.5rem;
-      background: white;
-      border-radius: 24px;
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-    }
-    
-    .program-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 6px;
-      height: 100%;
-      background: linear-gradient(135deg, #0a0a0a 0%, #4a5568 100%);
-    }
-    
-    .program-card::after {
-      content: '';
-      position: absolute;
-      top: -100%;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.01) 100%);
-      transition: top 0.4s ease;
-    }
-    
-    .program-card:hover::after {
-      top: 0;
-    }
-    
-    .program-card:hover {
-      transform: translateY(-15px);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15);
-    }
-    
-    .program-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: #0a0a0a;
-      position: relative;
-      z-index: 2;
-    }
-    
-    .program-description {
-      color: #6a7280;
-      line-height: 1.8;
-      font-size: 1.1rem;
-      position: relative;
-      z-index: 2;
-    }
-    
-    /* Enhanced Contact Section */
-    .contact {
-      background: linear-gradient(135deg, #0a0a0a 0%, #2d2d2d 100%);
-      border-radius: 32px;
-      padding: 6rem 4rem;
-      margin: 6rem auto;
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .contact::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-      animation: pulse 4s ease-in-out infinite;
-    }
-    
-    .contact h2 {
-      color: white;
-      margin-bottom: 2rem;
-    }
-    
-    .contact-form {
-      max-width: 600px;
+
+    /* ── SECTION WRAPPER ── */
+    .section-wrap {
+      max-width: 1200px;
       margin: 0 auto;
-      display: grid;
-      gap: 2rem;
-      position: relative;
-      z-index: 2;
+      padding: 7rem 2rem;
     }
-    
-    .form-group {
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--dark);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    .section-sub {
+      font-size: 1.1rem;
+      color: var(--slate);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── ABOUT ── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+    .about-right {
       display: flex;
       flex-direction: column;
+      gap: 2rem;
     }
-    
-    .contact-form input,
-    .contact-form textarea {
-      padding: 1.5rem 2rem;
-      border: 2px solid rgba(255, 255, 255, 0.1);
+    .about-block {
+      padding: 1.75rem;
       border-radius: 16px;
-      font-size: 1.1rem;
-      font-family: inherit;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      color: white;
-      transition: all 0.3s ease;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.25s ease;
     }
-    
-    .contact-form input::placeholder,
-    .contact-form textarea::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+    .about-block:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.07);
     }
-    
-    .contact-form input:focus,
-    .contact-form textarea:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.3);
-      background: rgba(255, 255, 255, 0.1);
-      transform: scale(1.02);
-    }
-    
-    .contact-form textarea {
-      min-height: 150px;
-      resize: vertical;
-    }
-    
-    .contact .btn-primary {
-      background: white;
-      color: #0a0a0a;
-      font-weight: 700;
-      border: none;
-      margin-top: 1rem;
-    }
-    
-    .contact .btn-primary:hover {
-      background: #f8f9fa;
-    }
-    
-    /* Enhanced Footer */
-    footer {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #6a7280;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-    
-    .footer-brand {
-      font-weight: 800;
+    .about-block-icon {
       font-size: 1.5rem;
-      margin-bottom: 2rem;
-      color: #0a0a0a;
+      margin-bottom: 0.75rem;
+      display: block;
     }
-    
-    .footer-nav {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    
-    .footer-nav a {
-      color: #6a7280;
-      text-decoration: none;
+    .about-block h3 {
       font-size: 1rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+      letter-spacing: -0.02em;
     }
-    
-    .footer-nav a:hover {
-      color: #0a0a0a;
-      background: rgba(0, 0, 0, 0.05);
-      transform: translateY(-2px);
+    .about-block p {
+      font-size: 0.95rem;
+      color: var(--slate);
+      line-height: 1.65;
     }
-    
-    .footer-tagline {
-      font-size: 1rem;
+    .about-quote {
+      margin-top: 2rem;
+      padding: 2rem;
+      background: var(--dark);
+      border-radius: 16px;
+      color: white;
+    }
+    .about-quote blockquote {
+      font-size: 1.1rem;
       font-style: italic;
-      opacity: 0.8;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+      margin-bottom: 1rem;
     }
-    
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(60px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .about-quote cite {
+      font-size: 0.85rem;
+      color: var(--orange);
+      font-weight: 600;
+      font-style: normal;
     }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
-    }
-    
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 0.05; transform: scale(1); }
-      50% { opacity: 0.1; transform: scale(1.1); }
-    }
-    
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        flex-direction: column;
-        padding: 1rem 0;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      }
-      
-      .nav-links.active {
-        display: flex;
-      }
-      
-      .nav-links a {
-        padding: 1rem 2rem;
-        border-radius: 0;
-        justify-content: center;
-      }
-      
-      .mobile-menu-btn {
-        display: block;
-      }
-      
-      .hero {
-        padding: 2rem 1rem;
-      }
-      
-      .hero h1 {
-        font-size: clamp(2.5rem, 8vw, 4rem);
-      }
 
-      .hero h2 {
-        font-size: clamp(2.5rem, 8vw, 4rem);
-      }
-      
-      .cta-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .btn {
-        width: 280px;
-      }
-      
-      section {
-        padding: 6rem 1rem;
-      }
-      
-      section h2 {
-        font-size: 2.5rem;
-      }
-      
-      .contact {
-        margin: 4rem 1rem;
-        padding: 3rem 2rem;
-        border-radius: 24px;
-      }
-      
-      .values-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .about-text {
-        padding: 2rem;
-      }
-      
-      .program-card {
-        padding: 2.5rem;
-      }
+    /* ── PROCESS ── */
+    .process-section {
+      background: var(--warm-white);
+      border-top: 1px solid rgba(0,0,0,0.06);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 4rem;
+      background: rgba(0,0,0,0.06);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .process-step {
+      background: white;
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+    .process-step:first-child { border-radius: 20px 0 0 20px; }
+    .process-step:last-child { border-radius: 0 20px 20px 0; }
+    .process-step:hover { background: var(--dark); }
+    .process-step:hover .step-num { color: var(--orange); }
+    .process-step:hover .step-title { color: white; }
+    .process-step:hover .step-desc { color: rgba(255,255,255,0.55); }
+    .step-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--orange);
+      margin-bottom: 1.25rem;
+      transition: color 0.25s;
+    }
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      transition: color 0.25s;
+    }
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--slate);
+      line-height: 1.6;
+      transition: color 0.25s;
+    }
+
+    /* ── SOLUTIONS ── */
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .solution-card {
+      padding: 2.25rem;
+      border-radius: 16px;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.07);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .solution-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--orange);
+      transition: width 0.3s ease;
+    }
+    .solution-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-color: transparent; }
+    .solution-card:hover::after { width: 100%; }
+    .solution-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--warm-white);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .solution-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+    .solution-desc {
+      font-size: 0.9rem;
+      color: var(--slate);
+      line-height: 1.65;
+    }
+
+    /* ── VALUES ── */
+    .values-section {
+      background: var(--dark);
+    }
+    .values-section .section-title { color: white; }
+    .values-section .section-sub { color: rgba(255,255,255,0.5); }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5px;
+      margin-top: 4rem;
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .value-card {
+      padding: 3rem;
+      background: var(--dark);
+      transition: background 0.25s;
+    }
+    .value-card:hover { background: var(--dark-3); }
+    .value-card:nth-child(1) { border-radius: 20px 0 0 0; }
+    .value-card:nth-child(2) { border-radius: 0 20px 0 0; }
+    .value-card:nth-child(3) { border-radius: 0 0 0 20px; }
+    .value-card:nth-child(4) { border-radius: 0 0 20px 0; }
+    .value-icon { font-size: 1.75rem; margin-bottom: 1.25rem; display: block; }
+    .value-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+    .value-desc { font-size: 0.9rem; color: rgba(255,255,255,0.45); line-height: 1.65; }
+
+    /* ── CONTACT ── */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .contact-info { padding-top: 0.5rem; }
+    .contact-info .section-title { margin-bottom: 1.25rem; }
+    .contact-info p { color: var(--slate); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; }
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--slate);
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+    .contact-detail strong { color: var(--dark); }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form select {
+      padding: 0.9rem 1.25rem;
+      border: 1.5px solid rgba(0,0,0,0.1);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: white;
+      color: var(--dark);
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+    }
+    .contact-form textarea { min-height: 130px; resize: vertical; }
+    .contact-form select { color: #6b7280; }
+    .contact-form select option { color: var(--dark); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      padding: 4rem 2rem 2.5rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 2.5rem;
+    }
+    .footer-logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: white;
+      letter-spacing: -0.03em;
+    }
+    .footer-tagline {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 0.25rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: white; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy { font-size: 0.8rem; color: rgba(255,255,255,0.25); }
+    .footer-orange { color: var(--orange); font-weight: 600; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .about-layout,
+      .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .process-step:first-child { border-radius: 20px 0 0 0; }
+      .process-step:nth-child(2) { border-radius: 0 20px 0 0; }
+      .process-step:nth-child(3) { border-radius: 0 0 0 20px; }
+      .process-step:last-child { border-radius: 0 0 20px 0; }
+      .solutions-grid { grid-template-columns: 1fr 1fr; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { flex-direction: column; gap: 2rem; text-align: center; }
+      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.1); gap: 0.25rem; }
+      .nav-links.open { display: flex; }
+      .nav-links .nav-cta { text-align: center; }
+      .mobile-menu-btn { display: block; }
+      .section-wrap { padding: 5rem 1.25rem; }
+      .process-steps { grid-template-columns: 1fr; }
+      .process-step { border-radius: 0 !important; }
+      .process-step:first-child { border-radius: 20px 20px 0 0 !important; }
+      .process-step:last-child { border-radius: 0 0 20px 20px !important; }
+      .solutions-grid { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+      .value-card { border-radius: 0 !important; }
+      .value-card:first-child { border-radius: 20px 20px 0 0 !important; }
+      .value-card:last-child { border-radius: 0 0 20px 20px !important; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .hero { padding: 7rem 1.25rem 5rem; }
+      .footer-links { flex-wrap: wrap; justify-content: center; gap: 1rem; }
     }
   </style>
-  <script>
-    // Enhanced scroll effect
-    window.addEventListener('scroll', function() {
-      const nav = document.querySelector('nav');
-      if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    });
-
-    // Mobile menu toggle
-    document.addEventListener('DOMContentLoaded', function() {
-      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-      const navLinks = document.querySelector('.nav-links');
-      
-      mobileMenuBtn.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-      });
-
-      // Close mobile menu when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!mobileMenuBtn.contains(e.target) && !navLinks.contains(e.target)) {
-          navLinks.classList.remove('active');
-        }
-      });
-
-      // Add floating elements
-      const hero = document.querySelector('.hero');
-      const floatingContainer = document.createElement('div');
-      floatingContainer.classList.add('floating-elements');
-      
-      for (let i = 0; i < 20; i++) {
-        const element = document.createElement('div');
-        element.classList.add('floating-element');
-        element.style.left = Math.random() * 100 + '%';
-        element.style.top = Math.random() * 100 + '%';
-        element.style.animationDelay = Math.random() * 15 + 's';
-        element.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        floatingContainer.appendChild(element);
-      }
-      
-      hero.appendChild(floatingContainer);
-
-      // Active nav link
-      const sections = document.querySelectorAll('section');
-      const navItems = document.querySelectorAll('.nav-links a');
-      
-      window.addEventListener('scroll', function() {
-        let current = '';
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop;
-          const sectionHeight = section.clientHeight;
-          if (scrollY >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
-          }
-        });
-
-        navItems.forEach(item => {
-          item.classList.remove('active');
-          if (item.getAttribute('href').includes(current)) {
-            item.classList.add('active');
-          }
-        });
-      });
-    });
-  </script>
 </head>
 <body>
 
-  <nav>
+  <!-- NAV -->
+  <nav id="nav">
     <div class="nav-container">
-      <div class="logo">Foundry Initiative</div>
-      <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
+      <div class="logo">
+        <div class="logo-mark">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2L14 5.5V10.5L8 14L2 10.5V5.5L8 2Z" fill="#f97316" opacity="0.9"/>
+            <path d="M8 5L11 6.75V10.25L8 12L5 10.25V6.75L8 5Z" fill="white" opacity="0.6"/>
+          </svg>
+        </div>
+        Foundry Initiative
+      </div>
+      <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
-        <a href="#programs">Programs</a>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="#contact" class="nav-cta">Start a Project</a></li>
       </ul>
-      <button class="mobile-menu-btn">☰</button>
+      <button class="mobile-menu-btn" id="menuBtn">☰</button>
     </div>
   </nav>
 
+  <!-- HERO -->
   <section id="home" class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
     <div class="hero-content">
-      <h2>SHAPING LEADERS<br>FORGING IDEAS<br>BUILDING THE FUTURE</h2>
-      <p>The Foundry Initiative exists to create and refine people, ideas, and movements that impact communities for good.</p>
-      <div class="cta-buttons">
-        <a href="#contact" class="btn btn-primary">Join the Initiative</a>
-        <a href="#about" class="btn btn-secondary">Learn More</a>
+      <div class="hero-badge">
+        <span></span> Technology for Churches &amp; Nonprofits
+      </div>
+      <h1>Raw needs.<br><em>Forged into tools.</em></h1>
+      <p>Just like a foundry shapes raw ore into precision instruments, we take the unmet technology needs of churches and nonprofits and build the digital tools that power their mission.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Start a Project</a>
+        <a href="#solutions" class="btn btn-ghost">See What We Build</a>
       </div>
     </div>
   </section>
 
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <span class="stat-number">50+</span>
+        <div class="stat-label">Organizations Served</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">100+</span>
+        <div class="stat-label">Tools Built & Deployed</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Mission-First</span>
+        <div class="stat-label">Technology Approach</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Long-Term</span>
+        <div class="stat-label">Partnership Model</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
   <section id="about">
-    <h2>About Us</h2>
-    <div class="about-content">
-      <div class="about-text">
-        <p><strong>Our Story:</strong> The Foundry Initiative was founded on one simple belief: growth happens in the fire. Just as raw metal is refined into strength, people and ideas shine brightest when shaped, tested, and forged in community.</p>
-      </div>
-      <div class="about-text">
-        <p><strong>Our Vision:</strong> To ignite creativity, strengthen leaders, and shape communities through intentional development and bold action.</p>
-      </div>
-    </div>
-    
-    <div class="values-grid">
-      <div class="value-card">
-        <div class="value-icon">🔥</div>
-        <div class="value-title">Creativity</div>
-        <div class="value-description">We spark new ideas and innovative solutions that challenge conventional thinking</div>
-      </div>
-      <div class="value-card">
-        <div class="value-icon">🛠️</div>
-        <div class="value-title">Resilience</div>
-        <div class="value-description">We shape strength through challenges, building character that endures</div>
-      </div>
-      <div class="value-card">
-        <div class="value-icon">🤝</div>
-        <div class="value-title">Collaboration</div>
-        <div class="value-description">We forge together, creating powerful networks of change-makers</div>
-      </div>
-      <div class="value-card">
-        <div class="value-icon">🌍</div>
-        <div class="value-title">Impact</div>
-        <div class="value-description">We build with purpose for lasting change that transforms communities</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="programs">
-    <h2>What We Do</h2>
-    <div class="programs-grid">
-      <div class="program-card">
-        <div class="program-title">Leadership Development</div>
-        <div class="program-description">Comprehensive training and mentoring programs that build the next generation of visionary leaders. Through intensive workshops, one-on-one coaching, and real-world challenges, we develop confident leaders who inspire change.</div>
-      </div>
-      <div class="program-card">
-        <div class="program-title">Innovation Labs</div>
-        <div class="program-description">Dynamic collaborative spaces where breakthrough ideas are born and refined into actionable solutions. Our state-of-the-art facilities provide the tools and environment needed to transform concepts into reality.</div>
-      </div>
-      <div class="program-card">
-        <div class="program-title">Community Projects</div>
-        <div class="program-description">Hands-on initiatives that unite people around meaningful causes. From neighborhood revitalization to social entrepreneurship, we create opportunities for lasting community impact.</div>
-      </div>
-      <div class="program-card">
-        <div class="program-title">Creative Residency</div>
-        <div class="program-description">An inspiring sanctuary for artists, innovators, and thought leaders to create, collaborate, and share transformative work that shapes culture and drives progress.</div>
+    <div class="section-wrap">
+      <div class="about-layout">
+        <div class="about-left">
+          <div class="section-label">About Us</div>
+          <h2 class="section-title">We build the tools your mission deserves</h2>
+          <p class="section-sub" style="margin-bottom: 2rem;">Foundry Initiative is a community-driven initiative built to serve churches, ministries, and mission-driven nonprofits. We believe every organization — regardless of size or budget — deserves technology that actually works for them.</p>
+          <p class="section-sub">The foundry has always been where raw materials become something powerful. We bring that same craftsmanship to software, apps, and digital infrastructure — forging solutions from the ground up, shaped by your specific needs.</p>
+          <div class="about-quote" style="margin-top: 2.5rem;">
+            <blockquote>"The right tool changes everything. We exist to make sure mission-driven organizations have the tools they need to do the work that matters."</blockquote>
+            <cite>— The Foundry Initiative Team</cite>
+          </div>
+        </div>
+        <div class="about-right">
+          <div class="about-block">
+            <span class="about-block-icon">⛏️</span>
+            <h3>From Raw Idea to Real Tool</h3>
+            <p>Every great piece of technology starts as an unmet need. We sit with your team, understand the challenge, and build something precise — not generic.</p>
+          </div>
+          <div class="about-block">
+            <span class="about-block-icon">🏗️</span>
+            <h3>Built for Your Community</h3>
+            <p>We don't hand off a product and disappear. We build in partnership, making sure what we create actually serves your congregation, members, and donors.</p>
+          </div>
+          <div class="about-block">
+            <span class="about-block-icon">🔩</span>
+            <h3>Durable by Design</h3>
+            <p>Good tools outlast trends. We build technology with longevity in mind — maintainable, scalable, and strong enough to grow with your organization.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="contact" class="contact">
-    <h2>Let's Build Together</h2>
-    <form class="contact-form" action="https://formspree.io/f/xjkebrjk" method="POST">
-      <div class="form-group">
-        <input type="text" name="name" placeholder="Your Name" required>
+  <!-- PROCESS -->
+  <section id="process" class="process-section">
+    <div class="section-wrap">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">The Foundry Process</h2>
+      <p class="section-sub">Every tool we build follows a disciplined craft process — from raw need to refined solution.</p>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01 — GATHER</div>
+          <div class="step-title">Understand the Need</div>
+          <div class="step-desc">We start by listening. We learn your mission, your community, your constraints, and the specific problem you're trying to solve — before writing a single line of code.</div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02 — FORGE</div>
+          <div class="step-title">Design &amp; Build</div>
+          <div class="step-desc">We heat up the raw material — your ideas and requirements — and shape them into a technology solution that fits exactly. Custom-built, not repurposed.</div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03 — TEMPER</div>
+          <div class="step-title">Test &amp; Refine</div>
+          <div class="step-desc">Just as metal is tempered for strength, we test rigorously. We put your solution through real-world scenarios until it's strong enough to rely on.</div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04 — DEPLOY</div>
+          <div class="step-title">Launch &amp; Support</div>
+          <div class="step-desc">We ship your solution and stand behind it. Ongoing support, training, and iteration — because a tool is only valuable when the people using it succeed.</div>
+        </div>
       </div>
-      <div class="form-group">
-        <input type="email" name="email" placeholder="Email Address" required>
-      </div>
-      <div class="form-group">
-        <textarea name="message" placeholder="Tell us about your vision and how you'd like to shape the future with us..." required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Send Message</button>
-    </form>
+    </div>
   </section>
 
+  <!-- SOLUTIONS -->
+  <section id="solutions">
+    <div class="section-wrap">
+      <div class="section-label">What We Build</div>
+      <h2 class="section-title">Technology solutions<br>for every part of your mission</h2>
+      <p class="section-sub">From websites to custom software, we build the digital infrastructure that lets your organization focus on impact — not IT problems.</p>
+      <div class="solutions-grid">
+        <div class="solution-card">
+          <div class="solution-icon">🌐</div>
+          <div class="solution-title">Ministry Websites &amp; Digital Presence</div>
+          <div class="solution-desc">Beautiful, fast, and purpose-built websites that communicate your mission, engage visitors, and convert interest into involvement.</div>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">💳</div>
+          <div class="solution-title">Online Giving &amp; Donation Platforms</div>
+          <div class="solution-desc">Frictionless giving experiences that increase donor retention — integrated with your existing systems and built to maximize generosity.</div>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">📱</div>
+          <div class="solution-title">Custom Apps &amp; Member Portals</div>
+          <div class="solution-desc">Mobile and web applications that connect your congregation or community — event registrations, resources, directories, and more.</div>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">🗂️</div>
+          <div class="solution-title">Church &amp; Nonprofit Management Systems</div>
+          <div class="solution-desc">Custom database and management tools that bring your operations together — member records, volunteer coordination, and reporting in one place.</div>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">📣</div>
+          <div class="solution-title">Communication &amp; Outreach Tools</div>
+          <div class="solution-desc">Email, SMS, and automated outreach pipelines that keep your community informed and engaged without adding to your staff's workload.</div>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">🛠️</div>
+          <div class="solution-title">Tech Consulting &amp; Strategy</div>
+          <div class="solution-desc">Not sure where to start? We'll audit your current tech stack, identify the gaps, and build a roadmap that aligns technology with your long-term mission.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section id="values" class="values-section">
+    <div class="section-wrap">
+      <div class="section-label" style="color: var(--orange);">Our Principles</div>
+      <h2 class="section-title">Built on the right foundations</h2>
+      <p class="section-sub">We're a technology company, but these are the values that shape how we work.</p>
+      <div class="values-grid">
+        <div class="value-card">
+          <span class="value-icon">🔥</span>
+          <div class="value-title">Mission First, Technology Second</div>
+          <div class="value-desc">We never lead with tech for tech's sake. Every tool we build is in service of your mission — the technology is the means, not the end.</div>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">⚙️</span>
+          <div class="value-title">Craft Over Convenience</div>
+          <div class="value-desc">We could hand you a template. We don't. Real problems deserve real solutions — built with the same care a craftsman brings to every piece that leaves the forge.</div>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🤝</span>
+          <div class="value-title">Partnership, Not Transactions</div>
+          <div class="value-desc">We're not a vendor. We're a long-term partner. We grow alongside the organizations we serve and measure our success by theirs.</div>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🌍</span>
+          <div class="value-title">Accessible to All</div>
+          <div class="value-desc">No organization is too small or too under-resourced. We exist to serve — not to profit from the organizations doing the most important work in our communities.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-wrap">
+      <div class="contact-layout">
+        <div class="contact-info">
+          <div class="section-label">Get In Touch</div>
+          <h2 class="section-title">Bring us your raw idea</h2>
+          <p>Whether you have a fully-formed project or just a problem you can't solve — we want to hear it. That's where great tools are born.</p>
+          <div class="contact-detail">
+            <span>📍</span>
+            <span><strong>Serving organizations nationwide</strong></span>
+          </div>
+          <div class="contact-detail">
+            <span>💬</span>
+            <span>We respond within <strong>1–2 business days</strong></span>
+          </div>
+
+        </div>
+        <form class="contact-form" action="https://formspree.io/f/xjkebrjk" method="POST">
+          <div class="form-row">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+          </div>
+          <input type="text" name="organization" placeholder="Organization Name">
+          <select name="type">
+            <option value="" disabled selected>What type of organization?</option>
+            <option>Church / Ministry</option>
+            <option>Nonprofit</option>
+            <option>Faith-Based Organization</option>
+            <option>Other Mission-Driven Org</option>
+          </select>
+          <select name="interest">
+            <option value="" disabled selected>What are you looking to build?</option>
+            <option>Website or Digital Presence</option>
+            <option>Giving / Donation Platform</option>
+            <option>Custom App or Member Portal</option>
+            <option>Management System</option>
+            <option>Communication Tools</option>
+            <option>Tech Strategy / Consulting</option>
+            <option>Not Sure Yet</option>
+          </select>
+          <textarea name="message" placeholder="Tell us about your organization and what you're trying to build or solve..." required></textarea>
+          <button type="submit" class="btn btn-dark" style="align-self: flex-start; padding: 0.9rem 2.25rem;">Send Message →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer>
-    <div class="footer-brand">Foundry Initiative</div>
-    <nav class="footer-nav">
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#programs">Programs</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="footer-tagline">Forging ideas. Shaping people. Building the future.</div>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Foundry Initiative</div>
+          <div class="footer-tagline">Forging technology for the missions that matter.</div>
+        </div>
+        <nav class="footer-links">
+          <a href="#about">About</a>
+          <a href="#process">Process</a>
+          <a href="#solutions">Solutions</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 Foundry Initiative. All rights reserved.</div>
+        <div class="footer-copy">Built with <span class="footer-orange">purpose</span>.</div>
+      </div>
+    </div>
   </footer>
 
+  <script>
+    // Nav scroll effect
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Mobile menu
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      const btn = document.getElementById('menuBtn');
+      const links = document.getElementById('navLinks');
+      if (!btn.contains(e.target) && !links.contains(e.target)) {
+        links.classList.remove('open');
+      }
+    });
+
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+    });
+  </script>
 </body>
 </html>

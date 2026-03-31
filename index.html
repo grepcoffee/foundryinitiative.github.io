@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Foundry Initiative — Technology for Mission-Driven Organizations</title>
+  <title>Foundry Initiative</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,7 +36,7 @@
       position: fixed;
       top: 0;
       width: 100%;
-      background: rgba(255,255,255,0.95);
+      background: white;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(0,0,0,0.08);
@@ -522,6 +522,104 @@
     .contact-form select { color: #6b7280; }
     .contact-form select option { color: var(--dark); }
 
+    /* ── PRODUCTS ── */
+    .products-section {
+      background: var(--dark);
+    }
+    .products-section .section-label { color: var(--orange); }
+    .products-section .section-title { color: white; }
+    .products-section .section-sub { color: rgba(255,255,255,0.45); }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .product-card {
+      padding: 2.5rem;
+      border-radius: 20px;
+      background: var(--dark-2);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.12); }
+    .product-card:hover::before { opacity: 1; }
+    .product-card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3b82f6;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .product-card-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #3b82f6;
+      display: inline-block;
+    }
+    .product-card-label.coming-soon { color: var(--slate); }
+    .product-card-label.coming-soon::before { background: var(--slate); }
+    .product-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+      line-height: 1.1;
+    }
+    .product-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+    }
+    .product-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .product-tag {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.4);
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.25rem 0.65rem;
+      border-radius: 50px;
+    }
+    .product-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #93c5fd;
+    }
+    .product-cta-muted {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.2);
+    }
+
     /* ── FOOTER ── */
     footer {
       background: var(--dark);
@@ -580,6 +678,7 @@
     @media (max-width: 900px) {
       .about-layout,
       .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .products-grid { grid-template-columns: 1fr; }
       .process-steps { grid-template-columns: 1fr 1fr; }
       .process-step:first-child { border-radius: 20px 0 0 0; }
       .process-step:nth-child(2) { border-radius: 0 20px 0 0; }
@@ -629,6 +728,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
         <li><a href="#process">How It Works</a></li>
+        <li><a href="#products">Products</a></li>
         <li><a href="#solutions">Solutions</a></li>
         <li><a href="#contact" class="nav-cta">Start a Project</a></li>
       </ul>
@@ -782,6 +882,52 @@
     </div>
   </section>
 
+  <!-- PRODUCTS -->
+  <section id="products" class="products-section">
+    <div class="section-wrap">
+      <div class="section-label">Our Products</div>
+      <h2 class="section-title">Tools forged for<br>the church community</h2>
+      <p class="section-sub">Beyond custom builds, Foundry Initiative develops open products available to any congregation — purpose-built software you can own and run yourself.</p>
+      <div class="products-grid">
+        <a href="churchflow.html" class="product-card">
+          <div class="product-card-label">Available Now</div>
+          <div class="product-name">ChurchFlow</div>
+          <div class="product-desc">Church attendance and check-in management, deeply integrated with Planning Center Online. Track who shows up, follow up with who doesn't.</div>
+          <div class="product-tags">
+            <span class="product-tag">Attendance</span>
+            <span class="product-tag">PCO Sync</span>
+            <span class="product-tag">Absence Reports</span>
+            <span class="product-tag">Visitor Log</span>
+            <span class="product-tag">Self-Hosted</span>
+          </div>
+          <div class="product-cta">Learn more →</div>
+        </a>
+        <div class="product-card" style="cursor:default">
+          <div class="product-card-label coming-soon">Coming Soon</div>
+          <div class="product-name">FoundryGive</div>
+          <div class="product-desc">A lightweight online giving platform for churches and nonprofits. Simple setup, transparent fees, and donor data you actually own.</div>
+          <div class="product-tags">
+            <span class="product-tag">Online Giving</span>
+            <span class="product-tag">Donor Management</span>
+            <span class="product-tag">Recurring Gifts</span>
+          </div>
+          <div class="product-cta-muted">In development</div>
+        </div>
+        <div class="product-card" style="cursor:default">
+          <div class="product-card-label coming-soon">Coming Soon</div>
+          <div class="product-name">PastorDesk</div>
+          <div class="product-desc">A pastoral care and follow-up tool — prayer requests, member notes, visit logs, and care task tracking for small church staff teams.</div>
+          <div class="product-tags">
+            <span class="product-tag">Pastoral Care</span>
+            <span class="product-tag">Prayer Requests</span>
+            <span class="product-tag">Follow-Up</span>
+          </div>
+          <div class="product-cta-muted">In development</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- VALUES -->
   <section id="values" class="values-section">
     <div class="section-wrap">
@@ -872,6 +1018,7 @@
         <nav class="footer-links">
           <a href="#about">About</a>
           <a href="#process">Process</a>
+          <a href="#products">Products</a>
           <a href="#solutions">Solutions</a>
           <a href="#contact">Contact</a>
         </nav>

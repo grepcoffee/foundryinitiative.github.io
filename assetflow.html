@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AssetFlow — Church & Nonprofit Asset Tracking</title>
+  <meta name="description" content="AssetFlow is a self-hosted asset tracking and management system built for churches and nonprofits. Know what you own, where it is, and who has it.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --orange: #f97316;
+      --orange-light: #fb923c;
+      --orange-dim: rgba(249, 115, 22, 0.15);
+      --dark: #0c0a09;
+      --dark-2: #1c1917;
+      --dark-3: #292524;
+      --warm-white: #fafaf9;
+      --slate: #78716c;
+      --slate-light: #a8a29e;
+      --border: rgba(255,255,255,0.08);
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --teal-dim: rgba(13, 148, 136, 0.15);
+      --emerald: #059669;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark);
+      background: #ffffff;
+      line-height: 1.7;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: white;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    nav.scrolled { padding: 0.65rem 0; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--dark);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--dark);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--dark); background: rgba(0,0,0,0.05); }
+    .nav-links .nav-cta {
+      background: var(--dark);
+      color: white !important;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      margin-left: 0.5rem;
+    }
+    .nav-links .nav-cta:hover { background: var(--dark-2) !important; transform: none; }
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--dark);
+      padding: 0.25rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 90vh;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(13,148,136,0.2) 0%, rgba(5,150,105,0.12) 40%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .hero-content {
+      max-width: 860px;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(13,148,136,0.15);
+      border: 1px solid rgba(13,148,136,0.35);
+      color: #5eead4;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+      text-decoration: none;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--teal-light); border-radius: 50%; display: inline-block; }
+    .hero h1 {
+      font-size: clamp(2.8rem, 6.5vw, 5rem);
+      font-weight: 900;
+      color: white;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.75rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--teal-light), var(--emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.55);
+      max-width: 580px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    .hero-tags {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.55);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--dark);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    .section-sub {
+      font-size: 1.1rem;
+      color: var(--slate);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── OVERVIEW STRIP ── */
+    .overview-strip {
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+    .overview-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+    .overview-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.04em;
+      display: block;
+    }
+    .overview-label {
+      font-size: 0.875rem;
+      color: var(--slate);
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    /* ── APP MOCKUP ── */
+    .mockup-section {
+      background: var(--dark);
+      overflow: hidden;
+    }
+    .mockup-section .section-label { color: #5eead4; }
+    .mockup-section .section-title { color: white; }
+    .mockup-section .section-sub { color: rgba(255,255,255,0.45); }
+    .mockup-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+    }
+    .mockup-header {
+      max-width: 600px;
+      margin-bottom: 5rem;
+    }
+    .mockup-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .mockup-tab {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.45);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mockup-tab.active {
+      background: rgba(13,148,136,0.25);
+      border-color: rgba(20,184,166,0.4);
+      color: #5eead4;
+    }
+    .mockup-screen { display: none; }
+    .mockup-screen.active { display: block; }
+
+    /* Browser chrome */
+    .browser {
+      background: #1e1b18;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+    }
+    .browser-bar {
+      background: #2a2522;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .browser-dots { display: flex; gap: 0.4rem; }
+    .browser-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .browser-dot:nth-child(1) { background: #ef4444; }
+    .browser-dot:nth-child(2) { background: #f59e0b; }
+    .browser-dot:nth-child(3) { background: #22c55e; }
+    .browser-url {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      font-family: monospace;
+    }
+    .browser-body { padding: 0; }
+
+    /* ── App UI Mockup ── */
+    .app-shell {
+      display: flex;
+      height: 520px;
+      overflow: hidden;
+    }
+    .app-sidebar {
+      width: 220px;
+      background: #042f2e;
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+    .app-sidebar-logo {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.03em;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .app-sidebar-logo-dot {
+      width: 22px;
+      height: 22px;
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      border-radius: 6px;
+    }
+    .app-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.4);
+    }
+    .app-nav-item.active {
+      background: rgba(13,148,136,0.25);
+      color: #5eead4;
+    }
+    .app-nav-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+    }
+    .app-main {
+      flex: 1;
+      background: #0f2320;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    .app-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .app-page-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+    .app-action-btn {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    /* Dashboard stat cards */
+    .app-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .app-stat-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .app-stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .app-stat-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      font-weight: 500;
+    }
+    .app-stat-card.highlight .app-stat-num { color: #34d399; }
+    .app-stat-card.warning .app-stat-num { color: #f59e0b; }
+    .app-stat-card.info .app-stat-num { color: #5eead4; }
+
+    /* Asset list */
+    .app-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+    .app-list-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .app-asset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .app-asset-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 9px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .app-asset-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(13,148,136,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .app-asset-info { flex: 1; }
+    .app-asset-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: white;
+      letter-spacing: -0.01em;
+    }
+    .app-asset-meta {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.1rem;
+    }
+    .app-asset-status {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+    }
+    .status-available {
+      background: rgba(52,211,153,0.15);
+      color: #34d399;
+    }
+    .status-checked-out {
+      background: rgba(245,158,11,0.15);
+      color: #f59e0b;
+    }
+    .status-maintenance {
+      background: rgba(239,68,68,0.15);
+      color: #f87171;
+    }
+
+    /* Checkout form */
+    .checkout-form {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .checkout-form-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .checkout-field {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.6rem;
+    }
+    .checkout-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    .checkout-submit {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: white;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Maintenance log */
+    .maintenance-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0.85rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 9px;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 0.5rem;
+    }
+    .maintenance-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 0.35rem;
+      flex-shrink: 0;
+    }
+    .dot-due { background: #f59e0b; }
+    .dot-ok { background: #34d399; }
+    .dot-overdue { background: #f87171; }
+    .maintenance-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: white;
+    }
+    .maintenance-detail {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 0.15rem;
+    }
+    .maintenance-date {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: auto;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      flex-shrink: 0;
+    }
+    .date-due { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .date-ok { background: rgba(52,211,153,0.12); color: #34d399; }
+    .date-overdue { background: rgba(239,68,68,0.15); color: #f87171; }
+
+    /* Add asset form */
+    .add-asset-form {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .add-asset-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .add-asset-field {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.6rem;
+    }
+    .add-asset-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    .add-asset-qr {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(13,148,136,0.15);
+      border: 1px solid rgba(20,184,166,0.25);
+      border-radius: 7px;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.75rem;
+      color: #5eead4;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+    .add-asset-submit {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: white;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 0.5rem;
+      margin-left: 0.5rem;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 4rem;
+    }
+    .feature-card {
+      padding: 2rem;
+      border-radius: 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.25s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(13,148,136,0.2);
+      box-shadow: 0 8px 30px rgba(13,148,136,0.08);
+      transform: translateY(-2px);
+    }
+    .feature-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .feature-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--slate);
+      line-height: 1.65;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: var(--warm-white); border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 4rem;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.07);
+    }
+    .how-step {
+      padding: 2.5rem;
+      background: white;
+      border-right: 1px solid rgba(0,0,0,0.07);
+      transition: background 0.25s;
+    }
+    .how-step:last-child { border-right: none; }
+    .how-step:hover { background: rgba(13,148,136,0.03); }
+    .step-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 1.25rem;
+      transition: color 0.25s;
+    }
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      transition: color 0.25s;
+    }
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--slate);
+      line-height: 1.6;
+      transition: color 0.25s;
+    }
+
+    /* ── TECH SPECS ── */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .spec-card {
+      padding: 2rem;
+      border-radius: 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .spec-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .spec-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .spec-list li {
+      font-size: 0.88rem;
+      color: var(--slate);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      line-height: 1.5;
+    }
+    .spec-list li::before {
+      content: '→';
+      color: var(--teal);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--dark);
+    }
+    .cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+    .cta-section .section-label { color: #5eead4; }
+    .cta-section .section-title { color: white; margin-bottom: 1.5rem; }
+    .cta-section .section-sub { color: rgba(255,255,255,0.45); margin-bottom: 2.5rem; max-width: none; }
+    .btn {
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-block;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(13,148,136,0.4); }
+    .cta-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .cta-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+    }
+    .cta-feature-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .cta-feature-text h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.02em;
+    }
+    .cta-feature-text p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.55;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070605;
+      padding: 3rem 2rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-brand {
+      font-weight: 800;
+      font-size: 1rem;
+      color: white;
+      letter-spacing: -0.03em;
+    }
+    .footer-sub {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 0.2rem;
+    }
+    .footer-link {
+      color: rgba(255,255,255,0.35);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: white; }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .how-steps { grid-template-columns: 1fr; }
+      .how-step { border-right: none !important; border-bottom: 1px solid rgba(0,0,0,0.07); border-radius: 0 !important; }
+      .how-step:first-child { border-radius: 20px 20px 0 0 !important; }
+      .how-step:last-child { border-radius: 0 0 20px 20px !important; border-bottom: none; }
+      .overview-inner { grid-template-columns: repeat(2, 1fr); }
+      .specs-grid { grid-template-columns: 1fr; }
+      .cta-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .app-sidebar { width: 160px; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.1); gap: 0.25rem; }
+      .nav-links.open { display: flex; }
+      .nav-links .nav-cta { text-align: center; }
+      .mobile-menu-btn { display: block; }
+      .section-wrap { padding: 5rem 1.25rem; }
+      .mockup-wrap { padding: 5rem 1.25rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .app-shell { height: auto; flex-direction: column; }
+      .app-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 0.75rem; }
+      .app-stats { grid-template-columns: 1fr 1fr; }
+      .hero { padding: 7rem 1.25rem 5rem; }
+      .overview-inner { grid-template-columns: 1fr 1fr; }
+      .checkout-field-row { grid-template-columns: 1fr; }
+      .add-asset-field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-mark">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2L14 5.5V10.5L8 14L2 10.5V5.5L8 2Z" fill="#f97316" opacity="0.9"/>
+            <path d="M8 5L11 6.75V10.25L8 12L5 10.25V6.75L8 5Z" fill="white" opacity="0.6"/>
+          </svg>
+        </div>
+        Foundry Initiative
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#products">Products</a></li>
+        <li><a href="index.html#solutions">Solutions</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Start a Project</a></li>
+      </ul>
+      <button class="mobile-menu-btn" id="menuBtn">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <a href="index.html#products" class="hero-badge">
+        <span></span> A Foundry Initiative Product
+      </a>
+      <h1>Every asset tracked,<br><em>nothing lost.</em></h1>
+      <p>AssetFlow is a self-hosted asset tracking and management system built for churches and nonprofits — giving your team a clear view of everything you own, where it lives, and who has it right now.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Asset Registry</span>
+        <span class="hero-tag">Check-Out Management</span>
+        <span class="hero-tag">QR Code Labels</span>
+        <span class="hero-tag">Maintenance Logs</span>
+        <span class="hero-tag">Multi-Location</span>
+        <span class="hero-tag">Self-Hosted</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERVIEW STRIP -->
+  <div class="overview-strip">
+    <div class="overview-inner">
+      <div>
+        <span class="overview-number">Real-Time</span>
+        <div class="overview-label">Asset Availability</div>
+      </div>
+      <div>
+        <span class="overview-number">QR Scan</span>
+        <div class="overview-label">Instant Asset Lookup</div>
+      </div>
+      <div>
+        <span class="overview-number">Auto-Alert</span>
+        <div class="overview-label">Overdue & Maintenance Reminders</div>
+      </div>
+      <div>
+        <span class="overview-number">Self-Hosted</span>
+        <div class="overview-label">Your Data, Your Inventory</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP MOCKUP SECTION -->
+  <section class="mockup-section">
+    <div class="mockup-wrap">
+      <div class="mockup-header">
+        <div class="section-label">See It In Action</div>
+        <h2 class="section-title">Built for ministry operations, not IT departments.</h2>
+        <p class="section-sub">Clean, fast, and designed for the people who actually manage your gear — not just the people who bought it.</p>
+      </div>
+
+      <div class="mockup-tabs">
+        <button class="mockup-tab active" onclick="showScreen('dashboard')">Dashboard</button>
+        <button class="mockup-tab" onclick="showScreen('checkout')">Check Out</button>
+        <button class="mockup-tab" onclick="showScreen('maintenance')">Maintenance</button>
+        <button class="mockup-tab" onclick="showScreen('addasset')">Add Asset</button>
+      </div>
+
+      <!-- DASHBOARD SCREEN -->
+      <div class="mockup-screen active" id="screen-dashboard">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">assetflow.local / dashboard</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  AssetFlow
+                </div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Dashboard</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Assets</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Check Out</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Maintenance</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Locations</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Reports</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main">
+                <div class="app-header-bar">
+                  <div class="app-page-title">Asset Overview</div>
+                  <div class="app-action-btn">+ Add Asset</div>
+                </div>
+                <div class="app-stats">
+                  <div class="app-stat-card highlight">
+                    <div class="app-stat-num">142</div>
+                    <div class="app-stat-label">Total Assets</div>
+                  </div>
+                  <div class="app-stat-card warning">
+                    <div class="app-stat-num">8</div>
+                    <div class="app-stat-label">Checked Out</div>
+                  </div>
+                  <div class="app-stat-card info">
+                    <div class="app-stat-num">3</div>
+                    <div class="app-stat-label">Maintenance Due</div>
+                  </div>
+                </div>
+                <div class="app-list-header">
+                  <div class="app-list-title">Recent Activity</div>
+                </div>
+                <div class="app-asset-list">
+                  <div class="app-asset-row">
+                    <div class="app-asset-icon">&#127908;</div>
+                    <div class="app-asset-info">
+                      <div class="app-asset-name">Shure SM58 Microphone #3</div>
+                      <div class="app-asset-meta">Checked out to Mike Johnson &middot; Due back Sunday</div>
+                    </div>
+                    <div class="app-asset-status status-checked-out">Out</div>
+                  </div>
+                  <div class="app-asset-row">
+                    <div class="app-asset-icon">&#128247;</div>
+                    <div class="app-asset-info">
+                      <div class="app-asset-name">Sony A7IV Camera</div>
+                      <div class="app-asset-meta">Storage Room B &middot; Last used Apr 6</div>
+                    </div>
+                    <div class="app-asset-status status-available">Available</div>
+                  </div>
+                  <div class="app-asset-row">
+                    <div class="app-asset-icon">&#128268;</div>
+                    <div class="app-asset-info">
+                      <div class="app-asset-name">Mackie ProFX16v3 Mixer</div>
+                      <div class="app-asset-meta">Main Stage &middot; Annual service overdue</div>
+                    </div>
+                    <div class="app-asset-status status-maintenance">Service Due</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK OUT SCREEN -->
+      <div class="mockup-screen" id="screen-checkout">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">assetflow.local / checkout</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  AssetFlow
+                </div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Dashboard</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Assets</div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Check Out</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Maintenance</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Locations</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Reports</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main" style="padding: 1.25rem;">
+                <div class="app-header-bar" style="margin-bottom:1rem">
+                  <div class="app-page-title">Check Out an Asset</div>
+                </div>
+                <div class="checkout-form">
+                  <div class="checkout-form-title">Issue Asset to Staff or Volunteer</div>
+                  <div class="checkout-field">&#128269; Scan QR code or search asset name&hellip;</div>
+                  <div class="checkout-field-row">
+                    <div class="checkout-field">Checked out to</div>
+                    <div class="checkout-field">Purpose / Event</div>
+                  </div>
+                  <div class="checkout-field-row">
+                    <div class="checkout-field">Check-out date</div>
+                    <div class="checkout-field">Expected return date</div>
+                  </div>
+                  <div class="checkout-field">Notes (optional)</div>
+                  <div style="display:flex; gap:0.6rem; align-items:center; margin-top:0.25rem;">
+                    <div class="checkout-submit">Issue Asset &#8594;</div>
+                    <div style="font-size:0.72rem; color:rgba(255,255,255,0.3);">Borrower receives email confirmation</div>
+                  </div>
+                </div>
+                <div style="margin-top:1rem;">
+                  <div class="app-list-header">
+                    <div class="app-list-title">Currently Checked Out &middot; 8 items</div>
+                  </div>
+                  <div class="app-asset-list" style="margin-top:0.5rem;">
+                    <div class="app-asset-row">
+                      <div class="app-asset-icon">&#127908;</div>
+                      <div class="app-asset-info">
+                        <div class="app-asset-name">Shure SM58 Microphone #3</div>
+                        <div class="app-asset-meta">Mike Johnson &middot; Due Apr 13</div>
+                      </div>
+                      <div class="app-asset-status status-checked-out">3 days left</div>
+                    </div>
+                    <div class="app-asset-row">
+                      <div class="app-asset-icon">&#128249;</div>
+                      <div class="app-asset-info">
+                        <div class="app-asset-name">Blackmagic ATEM Mini Pro</div>
+                        <div class="app-asset-meta">Sarah Chen &middot; Due Apr 11</div>
+                      </div>
+                      <div class="app-asset-status status-maintenance">1 day left</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAINTENANCE SCREEN -->
+      <div class="mockup-screen" id="screen-maintenance">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">assetflow.local / maintenance</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  AssetFlow
+                </div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Dashboard</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Assets</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Check Out</div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Maintenance</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Locations</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Reports</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main">
+                <div class="app-header-bar">
+                  <div class="app-page-title">Maintenance Schedule</div>
+                  <div class="app-action-btn">+ Log Service</div>
+                </div>
+                <div class="app-list-header" style="margin-bottom:0.6rem;">
+                  <div class="app-list-title">Upcoming &amp; Overdue</div>
+                </div>
+                <div class="maintenance-item">
+                  <div class="maintenance-dot dot-overdue"></div>
+                  <div style="flex:1;">
+                    <div class="maintenance-title">Mackie ProFX16v3 Mixer — Annual Service</div>
+                    <div class="maintenance-detail">Main Stage &middot; Last serviced Apr 2024</div>
+                  </div>
+                  <div class="maintenance-date date-overdue">Overdue</div>
+                </div>
+                <div class="maintenance-item">
+                  <div class="maintenance-dot dot-due"></div>
+                  <div style="flex:1;">
+                    <div class="maintenance-title">Projector Lens Cleaning — Sanyo PLC-XM150</div>
+                    <div class="maintenance-detail">Main Auditorium &middot; Quarterly</div>
+                  </div>
+                  <div class="maintenance-date date-due">Due Apr 15</div>
+                </div>
+                <div class="maintenance-item">
+                  <div class="maintenance-dot dot-due"></div>
+                  <div style="flex:1;">
+                    <div class="maintenance-title">Van #2 Oil Change — 2019 Ford Transit</div>
+                    <div class="maintenance-detail">Vehicle Fleet &middot; Every 5,000 miles</div>
+                  </div>
+                  <div class="maintenance-date date-due">Due Apr 22</div>
+                </div>
+                <div class="maintenance-item">
+                  <div class="maintenance-dot dot-ok"></div>
+                  <div style="flex:1;">
+                    <div class="maintenance-title">Generator Test Run — Generac GP3600</div>
+                    <div class="maintenance-detail">Utility Room &middot; Bi-annual &middot; Completed Mar 28</div>
+                  </div>
+                  <div class="maintenance-date date-ok">OK</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD ASSET SCREEN -->
+      <div class="mockup-screen" id="screen-addasset">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+              <div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">assetflow.local / assets / new</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  AssetFlow
+                </div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Dashboard</div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Assets</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Check Out</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Maintenance</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Locations</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Reports</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main" style="padding: 1.25rem;">
+                <div class="app-header-bar" style="margin-bottom:1rem">
+                  <div class="app-page-title">Register New Asset</div>
+                </div>
+                <div class="add-asset-form">
+                  <div class="add-asset-title">Asset Details</div>
+                  <div class="add-asset-field">Asset name</div>
+                  <div class="add-asset-field-row">
+                    <div class="add-asset-field">Category</div>
+                    <div class="add-asset-field">Location</div>
+                  </div>
+                  <div class="add-asset-field-row">
+                    <div class="add-asset-field">Serial number</div>
+                    <div class="add-asset-field">Purchase date</div>
+                  </div>
+                  <div class="add-asset-field-row">
+                    <div class="add-asset-field">Purchase value ($)</div>
+                    <div class="add-asset-field">Condition</div>
+                  </div>
+                  <div class="add-asset-field">Warranty expiry (optional)</div>
+                  <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; margin-top:0.25rem;">
+                    <div class="add-asset-qr">&#128247; Generate QR Label</div>
+                    <div class="add-asset-submit">Save Asset &#8594;</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-wrap">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything your team<br>needs to manage ministry assets</h2>
+      <p class="section-sub">AssetFlow was built from real operational needs — because "I don't know where that projector is" is a problem every church has faced.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#128230;</div>
+          <div class="feature-title">Asset Registry</div>
+          <div class="feature-desc">Catalog every item your organization owns — audio gear, vehicles, tools, cameras, furniture, tech hardware — with photos, serial numbers, purchase dates, and valuations.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128196;</div>
+          <div class="feature-title">Check-Out Management</div>
+          <div class="feature-desc">Issue assets to staff or volunteers with a due date and purpose. Get automatic reminders when items are overdue. Keep a complete log of every transaction — who had what, and when.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128247;</div>
+          <div class="feature-title">QR Code Labels</div>
+          <div class="feature-desc">Generate and print QR labels for any asset in seconds. Anyone with the app can scan a code to instantly view asset details, status, check-out history, and maintenance records.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128295;</div>
+          <div class="feature-title">Maintenance Scheduling</div>
+          <div class="feature-desc">Set recurring service intervals for any asset — annual inspections, oil changes, lens cleanings, battery replacements. Get alerted when service is coming up before it becomes a problem.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128205;</div>
+          <div class="feature-title">Multi-Location Support</div>
+          <div class="feature-desc">Organize assets by location — main stage, storage room, fellowship hall, campus B. Know exactly where every item should be and flag it when it moves unexpectedly.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9881;&#65039;</div>
+          <div class="feature-title">Condition Tracking</div>
+          <div class="feature-desc">Log damage, repairs, and wear over time. Each asset carries a running condition history — so you know when it's time to repair, replace, or retire an item before it fails in the middle of a service.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128202;</div>
+          <div class="feature-title">Depreciation Reports</div>
+          <div class="feature-desc">Understand the real financial picture of your inventory. Generate depreciation reports for stewardship reviews, insurance documentation, or end-of-year financial summaries.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128276;</div>
+          <div class="feature-title">Email Notifications</div>
+          <div class="feature-desc">Automated alerts for overdue check-outs, upcoming maintenance, and warranty expirations. Borrowers get confirmation emails on check-out and reminders before items are due back.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128274;</div>
+          <div class="feature-title">Role-Based Access</div>
+          <div class="feature-desc">Granular access control — admins manage the full registry, staff can check assets in and out, and viewers can look up asset details without making changes. Right access for every role.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-wrap">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Simple asset management workflow</h2>
+      <p class="section-sub">AssetFlow is built around a clear three-step process your whole team can adopt without training.</p>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">01 &mdash; CATALOG</div>
+          <div class="step-title">Register Your Assets</div>
+          <div class="step-desc">Add every asset to the registry with photos, serial numbers, purchase info, and location. Print a QR label and attach it to the item — now anyone on your team can pull up full details instantly with their phone.</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">02 &mdash; TRACK</div>
+          <div class="step-title">Issue, Monitor, Return</div>
+          <div class="step-desc">When someone needs gear, check it out to them with a due date. AssetFlow tracks who has what in real time and automatically sends reminders when items are overdue — so nothing quietly disappears for months.</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">03 &mdash; MAINTAIN</div>
+          <div class="step-title">Stay Ahead of Service</div>
+          <div class="step-desc">Set service intervals for every asset that needs them. AssetFlow alerts your team before maintenance is due — so you're scheduling planned downtime, not scrambling when something breaks the morning of an event.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH SPECS -->
+  <section id="technical">
+    <div class="section-wrap">
+      <div class="section-label">Under the Hood</div>
+      <h2 class="section-title">Built to run anywhere,<br>owned by your organization.</h2>
+      <p class="section-sub">AssetFlow is self-hosted — your inventory data stays on your hardware. No SaaS subscriptions, no per-user pricing, no vendor lock-in.</p>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h3>&#128421;&#65039; Infrastructure</h3>
+          <ul class="spec-list">
+            <li>Runs on any Node.js server — Mac mini, Raspberry Pi, VPS, or cloud VM</li>
+            <li>SQLite database with WAL mode for reliable concurrent access</li>
+            <li>Cloudflare Tunnel support for secure public HTTPS access</li>
+            <li>LaunchDaemon / systemd configuration for auto-start on macOS or Linux</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>&#128279; Integrations</h3>
+          <ul class="spec-list">
+            <li>QR code generation for printable asset labels (browser-native, no dependencies)</li>
+            <li>Resend email API for check-out confirmations and overdue alerts</li>
+            <li>CSV export for asset lists, depreciation reports, and maintenance logs</li>
+            <li>Barcode scanner support — USB and Bluetooth HID-compatible devices</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>&#128274; Security</h3>
+          <ul class="spec-list">
+            <li>bcrypt password hashing with configurable rounds</li>
+            <li>Session-based authentication with account lockout after failed attempts</li>
+            <li>Role-based access control enforced server-side on every request</li>
+            <li>Rate limiting on authentication and asset submission endpoints</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>&#9881;&#65039; Built With</h3>
+          <ul class="spec-list">
+            <li>Node.js + Express — fast, lightweight server with minimal footprint</li>
+            <li>better-sqlite3 — synchronous SQLite with zero native dependencies</li>
+            <li>Vanilla JavaScript frontend — no framework, no build step required</li>
+            <li>CSS custom properties for consistent theming across all views</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div>
+        <div class="section-label">Get AssetFlow</div>
+        <h2 class="section-title">A Foundry Initiative product, built for organizations like yours.</h2>
+        <p class="section-sub">AssetFlow is an open-source project developed by the Foundry Initiative. If your church or nonprofit needs a custom deployment, additional integrations, or hands-on setup support — we're here to help.</p>
+        <a href="index.html#contact" class="btn btn-primary">Talk to the Foundry &#8594;</a>
+      </div>
+      <div class="cta-features">
+        <div class="cta-feature">
+          <div class="cta-feature-icon">&#127968;</div>
+          <div class="cta-feature-text">
+            <h4>Self-Hosted &amp; Open Source</h4>
+            <p>Your asset data never leaves your infrastructure. No SaaS lock-in, no per-user pricing, no recurring subscription fees.</p>
+          </div>
+        </div>
+        <div class="cta-feature">
+          <div class="cta-feature-icon">&#128295;</div>
+          <div class="cta-feature-text">
+            <h4>Deployment Support Available</h4>
+            <p>The Foundry Initiative can handle installation, initial asset import, label printing setup, and ongoing support for organizations that need it.</p>
+          </div>
+        </div>
+        <div class="cta-feature">
+          <div class="cta-feature-icon">&#127807;</div>
+          <div class="cta-feature-text">
+            <h4>Built to Grow With You</h4>
+            <p>AssetFlow scales from a small congregation tracking 50 items to a multi-campus organization managing thousands. Feature requests from real users drive the roadmap.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">AssetFlow</div>
+        <div class="footer-sub">A Foundry Initiative Product</div>
+      </div>
+      <a href="index.html" class="footer-link">&#8592; Back to Foundry Initiative</a>
+      <div class="footer-copy">&copy; 2026 Foundry Initiative. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      const btn = document.getElementById('menuBtn');
+      const links = document.getElementById('navLinks');
+      if (!btn.contains(e.target) && !links.contains(e.target)) {
+        links.classList.remove('open');
+      }
+    });
+
+    function showScreen(name) {
+      document.querySelectorAll('.mockup-screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.mockup-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('screen-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

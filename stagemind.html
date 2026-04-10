@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>StageMind — AI-Powered Show Control for Live Events</title>
+  <meta name="description" content="StageMind is an AI-powered show control system that acts as an intelligent stage manager — orchestrating presentation, audio, lighting, video, and streaming from a single unified rundown.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --orange: #f97316;
+      --dark: #0c0a09;
+      --dark-2: #1c1917;
+      --dark-3: #292524;
+      --warm-white: #fafaf9;
+      --slate: #78716c;
+      --slate-light: #a8a29e;
+      --border: rgba(255,255,255,0.08);
+      --violet: #7c3aed;
+      --violet-light: #8b5cf6;
+      --violet-dim: rgba(124,58,237,0.15);
+      --fuchsia: #a21caf;
+      --fuchsia-light: #c026d3;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark);
+      background: #ffffff;
+      line-height: 1.7;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: white;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+    }
+    nav.scrolled { padding: 0.65rem 0; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--dark);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--dark);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--dark); background: rgba(0,0,0,0.05); }
+    .nav-links .nav-cta {
+      background: var(--dark);
+      color: white !important;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      margin-left: 0.5rem;
+    }
+    .nav-links .nav-cta:hover { background: var(--dark-2) !important; }
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--dark);
+      padding: 0.25rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 90vh;
+      background: #070412;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, rgba(162,28,175,0.1) 45%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    /* Subtle stage-light beams */
+    .hero-beams {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-beam {
+      position: absolute;
+      top: 0;
+      width: 1px;
+      height: 60%;
+      background: linear-gradient(to bottom, rgba(139,92,246,0.3), transparent);
+      transform-origin: top center;
+    }
+    .hero-beam:nth-child(1) { left: 25%; transform: rotate(-8deg); }
+    .hero-beam:nth-child(2) { left: 50%; transform: rotate(0deg); background: linear-gradient(to bottom, rgba(192,38,211,0.25), transparent); }
+    .hero-beam:nth-child(3) { left: 75%; transform: rotate(8deg); }
+    .hero-content {
+      max-width: 880px;
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(139,92,246,0.35);
+      color: #c4b5fd;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+      text-decoration: none;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--violet-light); border-radius: 50%; display: inline-block; }
+    .hero h1 {
+      font-size: clamp(2.8rem, 6.5vw, 5rem);
+      font-weight: 900;
+      color: white;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.75rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--violet-light), var(--fuchsia-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.5);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    .hero-tags {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--dark);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    .section-sub {
+      font-size: 1.1rem;
+      color: var(--slate);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── OVERVIEW STRIP ── */
+    .overview-strip {
+      background: white;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+    .overview-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+    .overview-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -0.04em;
+      display: block;
+    }
+    .overview-label {
+      font-size: 0.875rem;
+      color: var(--slate);
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    /* ── APP MOCKUP ── */
+    .mockup-section {
+      background: #070412;
+      overflow: hidden;
+    }
+    .mockup-section .section-label { color: #c4b5fd; }
+    .mockup-section .section-title { color: white; }
+    .mockup-section .section-sub { color: rgba(255,255,255,0.45); }
+    .mockup-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+    }
+    .mockup-header {
+      max-width: 600px;
+      margin-bottom: 5rem;
+    }
+    .mockup-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .mockup-tab {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.45);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mockup-tab.active {
+      background: rgba(124,58,237,0.25);
+      border-color: rgba(139,92,246,0.4);
+      color: #c4b5fd;
+    }
+    .mockup-screen { display: none; }
+    .mockup-screen.active { display: block; }
+
+    /* Browser chrome */
+    .browser {
+      background: #120d1e;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+    }
+    .browser-bar {
+      background: #1a1228;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .browser-dots { display: flex; gap: 0.4rem; }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-dot:nth-child(1) { background: #ef4444; }
+    .browser-dot:nth-child(2) { background: #f59e0b; }
+    .browser-dot:nth-child(3) { background: #22c55e; }
+    .browser-url {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      font-family: monospace;
+    }
+
+    /* ── App Shell ── */
+    .app-shell {
+      display: flex;
+      height: 540px;
+      overflow: hidden;
+    }
+    .app-sidebar {
+      width: 230px;
+      background: #0e0a1a;
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    .app-sidebar-logo {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.03em;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .app-sidebar-logo-dot {
+      width: 22px;
+      height: 22px;
+      background: linear-gradient(135deg, var(--violet), var(--fuchsia-light));
+      border-radius: 6px;
+    }
+    .app-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.35);
+    }
+    .app-nav-item.active {
+      background: rgba(124,58,237,0.2);
+      color: #c4b5fd;
+    }
+    .app-nav-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+    }
+    .app-main {
+      flex: 1;
+      background: #100d1c;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+    .app-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .app-page-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+    .app-action-btn {
+      background: linear-gradient(135deg, var(--violet), var(--fuchsia-light));
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .app-live-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #f87171;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      letter-spacing: 0.06em;
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #ef4444;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── Rundown cue list ── */
+    .rundown-header {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0 0 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 0.5rem;
+    }
+    .rundown-col-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.25);
+    }
+    .rundown-col-num { width: 28px; flex-shrink: 0; }
+    .rundown-col-type { width: 80px; flex-shrink: 0; }
+    .rundown-col-name { flex: 1; }
+    .rundown-col-dur { width: 52px; flex-shrink: 0; text-align: right; }
+    .rundown-col-status { width: 64px; flex-shrink: 0; text-align: center; }
+
+    .cue-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.6rem;
+      border-radius: 8px;
+      margin-bottom: 0.3rem;
+      border: 1px solid transparent;
+      transition: background 0.15s;
+    }
+    .cue-row.cue-done {
+      background: rgba(255,255,255,0.02);
+      opacity: 0.5;
+    }
+    .cue-row.cue-active {
+      background: rgba(124,58,237,0.18);
+      border-color: rgba(139,92,246,0.3);
+    }
+    .cue-row.cue-next {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.07);
+    }
+    .cue-row.cue-pending {
+      background: rgba(255,255,255,0.02);
+    }
+    .cue-num {
+      width: 28px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.25);
+      flex-shrink: 0;
+    }
+    .cue-active .cue-num { color: #c4b5fd; }
+    .cue-type-pill {
+      width: 80px;
+      flex-shrink: 0;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .type-lights { background: rgba(234,179,8,0.15); color: #fbbf24; }
+    .type-video { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .type-audio { background: rgba(34,197,94,0.15); color: #4ade80; }
+    .type-present { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+    .type-stream { background: rgba(239,68,68,0.15); color: #f87171; }
+    .type-multi { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+    .cue-name {
+      flex: 1;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.65);
+    }
+    .cue-active .cue-name { color: white; font-weight: 600; }
+    .cue-dur {
+      width: 52px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.25);
+      text-align: right;
+      font-family: monospace;
+      flex-shrink: 0;
+    }
+    .cue-status {
+      width: 64px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .cue-status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .dot-fired { background: rgba(255,255,255,0.2); }
+    .dot-firing { background: #a78bfa; box-shadow: 0 0 8px rgba(167,139,250,0.8); }
+    .dot-queued { background: rgba(255,255,255,0.1); }
+
+    /* ── Connections screen ── */
+    .connections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .connection-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .connection-card.connected { border-color: rgba(74,222,128,0.2); }
+    .connection-card.warning { border-color: rgba(251,191,36,0.2); }
+    .connection-card.offline { border-color: rgba(239,68,68,0.15); }
+    .conn-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .conn-info { flex: 1; }
+    .conn-name { font-size: 0.82rem; font-weight: 600; color: white; }
+    .conn-detail { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-top: 0.1rem; }
+    .conn-status {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      flex-shrink: 0;
+    }
+    .conn-ok { background: rgba(74,222,128,0.12); color: #4ade80; }
+    .conn-warn { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .conn-off { background: rgba(239,68,68,0.12); color: #f87171; }
+
+    /* ── AI screen ── */
+    .ai-panel {
+      background: rgba(124,58,237,0.07);
+      border: 1px solid rgba(139,92,246,0.15);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+    .ai-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .ai-icon {
+      width: 22px; height: 22px;
+      background: linear-gradient(135deg, var(--violet), var(--fuchsia-light));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    .ai-panel-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #c4b5fd;
+      letter-spacing: 0.04em;
+    }
+    .ai-panel-body {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.55;
+    }
+    .ai-suggestion {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .ai-suggestion-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+    .ai-suggestion-text { flex: 1; }
+    .ai-suggestion-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.2rem;
+    }
+    .ai-suggestion-detail {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.5;
+    }
+    .ai-suggestion-action {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #c4b5fd;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 6px;
+      padding: 0.25rem 0.6rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    /* ── Live screen ── */
+    .live-cue-display {
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+    .live-cue-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(196,181,253,0.6);
+      margin-bottom: 0.35rem;
+    }
+    .live-cue-name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+    .live-systems-firing {
+      display: flex;
+      gap: 0.4rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+    }
+    .live-system-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+    }
+    .live-next {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+    .live-next-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.3);
+    }
+    .live-next-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      margin-top: 0.15rem;
+    }
+    .live-go-btn {
+      background: linear-gradient(135deg, var(--violet), var(--fuchsia-light));
+      color: white;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 0.85rem 2rem;
+      border-radius: 10px;
+      text-align: center;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+    .live-system-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .live-sys-card {
+      flex: 1;
+      min-width: 80px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      text-align: center;
+    }
+    .live-sys-name { font-size: 0.68rem; color: rgba(255,255,255,0.35); margin-bottom: 0.25rem; }
+    .live-sys-val { font-size: 0.88rem; font-weight: 700; color: white; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 4rem;
+    }
+    .feature-card {
+      padding: 2rem;
+      border-radius: 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.25s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(124,58,237,0.2);
+      box-shadow: 0 8px 30px rgba(124,58,237,0.08);
+      transform: translateY(-2px);
+    }
+    .feature-icon { font-size: 1.75rem; margin-bottom: 1rem; display: block; }
+    .feature-title { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.6rem; letter-spacing: -0.02em; }
+    .feature-desc { font-size: 0.88rem; color: var(--slate); line-height: 1.65; }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: var(--warm-white); border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 4rem;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.07);
+    }
+    .how-step {
+      padding: 2.5rem;
+      background: white;
+      border-right: 1px solid rgba(0,0,0,0.07);
+      transition: background 0.25s;
+    }
+    .how-step:last-child { border-right: none; }
+    .how-step:hover { background: rgba(124,58,237,0.03); }
+    .step-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 1.25rem;
+    }
+    .step-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--dark); letter-spacing: -0.02em; }
+    .step-desc { font-size: 0.9rem; color: var(--slate); line-height: 1.6; }
+
+    /* ── TECH SPECS ── */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    .spec-card {
+      padding: 2rem;
+      border-radius: 16px;
+      background: var(--warm-white);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .spec-card h3 { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .spec-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .spec-list li {
+      font-size: 0.88rem;
+      color: var(--slate);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      line-height: 1.5;
+    }
+    .spec-list li::before { content: '→'; color: var(--violet); font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
+
+    /* ── CTA ── */
+    .cta-section { background: #070412; }
+    .cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+    .cta-section .section-label { color: #c4b5fd; }
+    .cta-section .section-title { color: white; margin-bottom: 1.5rem; }
+    .cta-section .section-sub { color: rgba(255,255,255,0.45); margin-bottom: 2.5rem; max-width: none; }
+    .btn {
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-block;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--violet), var(--fuchsia-light));
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(124,58,237,0.4); }
+    .cta-features { display: flex; flex-direction: column; gap: 1rem; }
+    .cta-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+    }
+    .cta-feature-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .cta-feature-text h4 { font-size: 0.9rem; font-weight: 700; color: white; margin-bottom: 0.25rem; letter-spacing: -0.02em; }
+    .cta-feature-text p { font-size: 0.82rem; color: rgba(255,255,255,0.4); line-height: 1.55; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #040309;
+      padding: 3rem 2rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-brand { font-weight: 800; font-size: 1rem; color: white; letter-spacing: -0.03em; }
+    .footer-sub { font-size: 0.8rem; color: rgba(255,255,255,0.3); margin-top: 0.2rem; }
+    .footer-link { color: rgba(255,255,255,0.35); font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: white; }
+    .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.2); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .how-steps { grid-template-columns: 1fr; }
+      .how-step { border-right: none !important; border-bottom: 1px solid rgba(0,0,0,0.07); border-radius: 0 !important; }
+      .how-step:first-child { border-radius: 20px 20px 0 0 !important; }
+      .how-step:last-child { border-radius: 0 0 20px 20px !important; border-bottom: none; }
+      .overview-inner { grid-template-columns: repeat(2, 1fr); }
+      .specs-grid { grid-template-columns: 1fr; }
+      .cta-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .app-sidebar { width: 170px; }
+      .connections-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: white; padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.1); gap: 0.25rem; }
+      .nav-links.open { display: flex; }
+      .nav-links .nav-cta { text-align: center; }
+      .mobile-menu-btn { display: block; }
+      .section-wrap { padding: 5rem 1.25rem; }
+      .mockup-wrap { padding: 5rem 1.25rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .app-shell { height: auto; flex-direction: column; }
+      .app-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 0.75rem; }
+      .hero { padding: 7rem 1.25rem 5rem; }
+      .overview-inner { grid-template-columns: 1fr 1fr; }
+      .rundown-col-dur { display: none; }
+      .cue-dur { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-mark">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2L14 5.5V10.5L8 14L2 10.5V5.5L8 2Z" fill="#f97316" opacity="0.9"/>
+            <path d="M8 5L11 6.75V10.25L8 12L5 10.25V6.75L8 5Z" fill="white" opacity="0.6"/>
+          </svg>
+        </div>
+        Foundry Initiative
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#products">Products</a></li>
+        <li><a href="index.html#solutions">Solutions</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Start a Project</a></li>
+      </ul>
+      <button class="mobile-menu-btn" id="menuBtn">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-beams">
+      <div class="hero-beam"></div>
+      <div class="hero-beam"></div>
+      <div class="hero-beam"></div>
+    </div>
+    <div class="hero-content">
+      <a href="index.html#products" class="hero-badge">
+        <span></span> A Foundry Initiative Product
+      </a>
+      <h1>One rundown.<br><em>Every system.</em></h1>
+      <p>StageMind is an AI-powered show control system that acts as your intelligent stage manager — orchestrating presentation, audio, lighting, video, and streaming from a single unified rundown, so your team runs the show, not a dozen separate apps.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Unified Rundown</span>
+        <span class="hero-tag">OSC &amp; MIDI</span>
+        <span class="hero-tag">AI Stage Manager</span>
+        <span class="hero-tag">ProPresenter</span>
+        <span class="hero-tag">Lighting Desks</span>
+        <span class="hero-tag">OBS / vMix</span>
+        <span class="hero-tag">Open Source</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERVIEW STRIP -->
+  <div class="overview-strip">
+    <div class="overview-inner">
+      <div>
+        <span class="overview-number">Unified</span>
+        <div class="overview-label">Rundown for Every System</div>
+      </div>
+      <div>
+        <span class="overview-number">OSC + MIDI</span>
+        <div class="overview-label">Hardware Cue Control</div>
+      </div>
+      <div>
+        <span class="overview-number">AI-Powered</span>
+        <div class="overview-label">Intelligent Stage Manager</div>
+      </div>
+      <div>
+        <span class="overview-number">Self-Hosted</span>
+        <div class="overview-label">Open Source, No Subscriptions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP MOCKUP SECTION -->
+  <section class="mockup-section">
+    <div class="mockup-wrap">
+      <div class="mockup-header">
+        <div class="section-label">See It In Action</div>
+        <h2 class="section-title">Built for the team running the show, not the one watching it.</h2>
+        <p class="section-sub">Clean, fast, and designed for high-pressure live environments — whether you're running a Sunday service or a multi-day conference.</p>
+      </div>
+
+      <div class="mockup-tabs">
+        <button class="mockup-tab active" onclick="showScreen('rundown')">Rundown</button>
+        <button class="mockup-tab" onclick="showScreen('connections')">Connections</button>
+        <button class="mockup-tab" onclick="showScreen('ai')">AI Manager</button>
+        <button class="mockup-tab" onclick="showScreen('live')">Live Mode</button>
+      </div>
+
+      <!-- RUNDOWN SCREEN -->
+      <div class="mockup-screen active" id="screen-rundown">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">stagemind.local / rundown / sunday-april-13</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  StageMind
+                </div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Rundown</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Connections</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> AI Manager</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Live Mode</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> History</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main">
+                <div class="app-header-bar">
+                  <div class="app-page-title">Sunday Morning &mdash; April 13</div>
+                  <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <div class="app-action-btn">&#9654; Go Live</div>
+                  </div>
+                </div>
+                <div class="rundown-header">
+                  <div class="rundown-col-label rundown-col-num">#</div>
+                  <div class="rundown-col-label rundown-col-type">System</div>
+                  <div class="rundown-col-label rundown-col-name">Cue / Action</div>
+                  <div class="rundown-col-label rundown-col-dur">Duration</div>
+                  <div class="rundown-col-label rundown-col-status">Status</div>
+                </div>
+                <div class="cue-row cue-done">
+                  <div class="cue-num">01</div>
+                  <div class="cue-type-pill type-lights">Lights</div>
+                  <div class="cue-name">Pre-service ambient wash &mdash; blue/purple</div>
+                  <div class="cue-dur">00:30</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-fired"></div></div>
+                </div>
+                <div class="cue-row cue-done">
+                  <div class="cue-num">02</div>
+                  <div class="cue-type-pill type-video">Video</div>
+                  <div class="cue-name">Loop countdown &mdash; 15 min pre-service</div>
+                  <div class="cue-dur">15:00</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-fired"></div></div>
+                </div>
+                <div class="cue-row cue-active">
+                  <div class="cue-num">03</div>
+                  <div class="cue-type-pill type-multi">All Systems</div>
+                  <div class="cue-name">Welcome &amp; Worship Start &mdash; lights up, stream live, slide 1</div>
+                  <div class="cue-dur">—</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-firing"></div></div>
+                </div>
+                <div class="cue-row cue-next">
+                  <div class="cue-num">04</div>
+                  <div class="cue-type-pill type-present">Slides</div>
+                  <div class="cue-name">Song 1 lyrics &mdash; "How Great Thou Art"</div>
+                  <div class="cue-dur">4:12</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-queued"></div></div>
+                </div>
+                <div class="cue-row cue-pending">
+                  <div class="cue-num">05</div>
+                  <div class="cue-type-pill type-lights">Lights</div>
+                  <div class="cue-name">Worship full intensity &mdash; warm white, moving heads</div>
+                  <div class="cue-dur">—</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-queued"></div></div>
+                </div>
+                <div class="cue-row cue-pending">
+                  <div class="cue-num">06</div>
+                  <div class="cue-type-pill type-stream">Stream</div>
+                  <div class="cue-name">Switch OBS scene &mdash; wide stage cam</div>
+                  <div class="cue-dur">—</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-queued"></div></div>
+                </div>
+                <div class="cue-row cue-pending">
+                  <div class="cue-num">07</div>
+                  <div class="cue-type-pill type-audio">Audio</div>
+                  <div class="cue-name">Sermon intro sting &mdash; trigger SFX cue 12</div>
+                  <div class="cue-dur">0:08</div>
+                  <div class="cue-status"><div class="cue-status-dot dot-queued"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONNECTIONS SCREEN -->
+      <div class="mockup-screen" id="screen-connections">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">stagemind.local / connections</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  StageMind
+                </div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Rundown</div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Connections</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> AI Manager</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Live Mode</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> History</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main">
+                <div class="app-header-bar">
+                  <div class="app-page-title">System Connections</div>
+                  <div class="app-action-btn">+ Add Integration</div>
+                </div>
+                <div class="connections-grid">
+                  <div class="connection-card connected">
+                    <div class="conn-icon">&#127909;</div>
+                    <div class="conn-info">
+                      <div class="conn-name">ProPresenter 7</div>
+                      <div class="conn-detail">192.168.1.42:50001 &middot; Stage Display active</div>
+                    </div>
+                    <div class="conn-status conn-ok">Live</div>
+                  </div>
+                  <div class="connection-card connected">
+                    <div class="conn-icon">&#127916;</div>
+                    <div class="conn-info">
+                      <div class="conn-name">OBS Studio</div>
+                      <div class="conn-detail">WebSocket 4455 &middot; 4 scenes mapped</div>
+                    </div>
+                    <div class="conn-status conn-ok">Live</div>
+                  </div>
+                  <div class="connection-card connected">
+                    <div class="conn-icon">&#128268;</div>
+                    <div class="conn-info">
+                      <div class="conn-name">ETC Eos Lighting Desk</div>
+                      <div class="conn-detail">OSC &middot; 192.168.1.10:8000 &middot; 24 cues mapped</div>
+                    </div>
+                    <div class="conn-status conn-ok">Live</div>
+                  </div>
+                  <div class="connection-card connected">
+                    <div class="conn-icon">&#127902;</div>
+                    <div class="conn-info">
+                      <div class="conn-name">Blackmagic ATEM Mini</div>
+                      <div class="conn-detail">192.168.1.88 &middot; 6 inputs detected</div>
+                    </div>
+                    <div class="conn-status conn-ok">Live</div>
+                  </div>
+                  <div class="connection-card warning">
+                    <div class="conn-icon">&#127925;</div>
+                    <div class="conn-info">
+                      <div class="conn-name">QLab 5</div>
+                      <div class="conn-detail">OSC &middot; Port mismatch detected</div>
+                    </div>
+                    <div class="conn-status conn-warn">Warning</div>
+                  </div>
+                  <div class="connection-card offline">
+                    <div class="conn-icon">&#128249;</div>
+                    <div class="conn-info">
+                      <div class="conn-name">Resolume Avenue</div>
+                      <div class="conn-detail">Not reachable &middot; 192.168.1.55</div>
+                    </div>
+                    <div class="conn-status conn-off">Offline</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI MANAGER SCREEN -->
+      <div class="mockup-screen" id="screen-ai">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">stagemind.local / ai-manager</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  StageMind
+                </div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Rundown</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Connections</div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> AI Manager</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Live Mode</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> History</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main">
+                <div class="app-header-bar">
+                  <div class="app-page-title">AI Stage Manager</div>
+                  <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);">Last analyzed 2 min ago</div>
+                </div>
+                <div class="ai-panel">
+                  <div class="ai-panel-header">
+                    <div class="ai-icon">&#10024;</div>
+                    <div class="ai-panel-title">Pre-Show Analysis &mdash; Sunday April 13</div>
+                  </div>
+                  <div class="ai-panel-body">3 issues detected in the rundown. QLab connection is degraded &mdash; audio cues 07 and 11 may not fire. Cue 03 has no fallback if ProPresenter is unreachable. Suggest reviewing before going live.</div>
+                </div>
+                <div class="ai-suggestion">
+                  <div class="ai-suggestion-icon">&#9888;&#65039;</div>
+                  <div class="ai-suggestion-text">
+                    <div class="ai-suggestion-title">QLab port mismatch may break audio cues 07 &amp; 11</div>
+                    <div class="ai-suggestion-detail">QLab is configured for OSC port 53000 but StageMind is sending to 53001. Update the port in Connections to restore control.</div>
+                  </div>
+                  <div class="ai-suggestion-action">Fix Now</div>
+                </div>
+                <div class="ai-suggestion">
+                  <div class="ai-suggestion-icon">&#128161;</div>
+                  <div class="ai-suggestion-text">
+                    <div class="ai-suggestion-title">Cue 03 fires 4 systems simultaneously &mdash; suggest stagger</div>
+                    <div class="ai-suggestion-detail">Triggering lights, stream, slides, and audio at the same moment can cause latency spikes. A 200ms stagger between systems is recommended.</div>
+                  </div>
+                  <div class="ai-suggestion-action">Apply</div>
+                </div>
+                <div class="ai-suggestion">
+                  <div class="ai-suggestion-icon">&#128203;</div>
+                  <div class="ai-suggestion-text">
+                    <div class="ai-suggestion-title">No blackout cue at end of rundown</div>
+                    <div class="ai-suggestion-detail">Based on past shows, you typically end with a house lights restore and stream end. These cues are missing from the current rundown.</div>
+                  </div>
+                  <div class="ai-suggestion-action">Add Cues</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE MODE SCREEN -->
+      <div class="mockup-screen" id="screen-live">
+        <div class="browser">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot"></div><div class="browser-dot"></div><div class="browser-dot"></div>
+            </div>
+            <div class="browser-url">stagemind.local / live</div>
+          </div>
+          <div class="browser-body">
+            <div class="app-shell">
+              <div class="app-sidebar">
+                <div class="app-sidebar-logo">
+                  <div class="app-sidebar-logo-dot"></div>
+                  StageMind
+                </div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Rundown</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Connections</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> AI Manager</div>
+                <div class="app-nav-item active"><div class="app-nav-dot"></div> Live Mode</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> History</div>
+                <div class="app-nav-item"><div class="app-nav-dot"></div> Settings</div>
+              </div>
+              <div class="app-main" style="padding:1.25rem;">
+                <div class="app-header-bar" style="margin-bottom:0.75rem;">
+                  <div class="app-page-title">Live &mdash; Sunday April 13</div>
+                  <div class="app-live-badge"><div class="live-dot"></div> ON AIR</div>
+                </div>
+                <div class="live-cue-display">
+                  <div class="live-cue-label">Now Firing &mdash; Cue 03</div>
+                  <div class="live-cue-name">Welcome &amp; Worship Start</div>
+                  <div class="live-systems-firing">
+                    <span class="live-system-tag type-lights">Lights &#10003;</span>
+                    <span class="live-system-tag type-stream">Stream &#10003;</span>
+                    <span class="live-system-tag type-present">Slides &#10003;</span>
+                    <span class="live-system-tag type-audio">Audio &#10003;</span>
+                  </div>
+                </div>
+                <div class="live-next">
+                  <div>
+                    <div class="live-next-label">Up Next &mdash; Cue 04</div>
+                    <div class="live-next-name">Song 1 Lyrics &mdash; "How Great Thou Art"</div>
+                  </div>
+                </div>
+                <div class="live-go-btn">&#9654;&nbsp;&nbsp;GO</div>
+                <div class="live-system-row">
+                  <div class="live-sys-card">
+                    <div class="live-sys-name">Lights</div>
+                    <div class="live-sys-val" style="color:#fbbf24;">Cue 3</div>
+                  </div>
+                  <div class="live-sys-card">
+                    <div class="live-sys-name">Slides</div>
+                    <div class="live-sys-val" style="color:#c4b5fd;">Slide 1</div>
+                  </div>
+                  <div class="live-sys-card">
+                    <div class="live-sys-name">Stream</div>
+                    <div class="live-sys-val" style="color:#f87171;">Live</div>
+                  </div>
+                  <div class="live-sys-card">
+                    <div class="live-sys-name">Audio</div>
+                    <div class="live-sys-val" style="color:#4ade80;">OK</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-wrap">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">One system to<br>orchestrate everything</h2>
+      <p class="section-sub">StageMind was built from the real frustration of managing a show across five different apps, three operators, and zero coordination.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#128203;</div>
+          <div class="feature-title">Unified Rundown</div>
+          <div class="feature-desc">One master document controls every system. Lighting cues, slide transitions, stream scene changes, audio triggers, and video playback all live in a single ordered rundown your whole team works from.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128268;</div>
+          <div class="feature-title">OSC &amp; MIDI Control</div>
+          <div class="feature-desc">Send OSC messages to lighting desks, QLab, Resolume, and any other hardware that speaks the protocol. Trigger MIDI cues for instrument and effects racks. Full two-way communication — StageMind listens as well as commands.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#10024;</div>
+          <div class="feature-title">AI Stage Manager</div>
+          <div class="feature-desc">Before the show, the AI reviews your rundown and connected systems — flagging timing conflicts, missing cues, offline connections, and common failure patterns. It learns from past shows to get smarter over time.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#127916;</div>
+          <div class="feature-title">ProPresenter Integration</div>
+          <div class="feature-desc">Deep two-way integration with ProPresenter 7 — advance slides, jump to specific items, trigger looks, and read back the current slide state. Works over the ProPresenter network API on your local network.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128249;</div>
+          <div class="feature-title">Streaming Control</div>
+          <div class="feature-desc">Switch OBS scenes, trigger vMix transitions, and control Blackmagic ATEM inputs directly from your rundown. Your stream operator stays in sync without needing a separate script.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9654;&#65039;</div>
+          <div class="feature-title">Live Mode</div>
+          <div class="feature-desc">A distraction-free full-screen view built for the moment the show is running. Large GO button, clear current/next cue display, real-time system status, and instant access to manual overrides if something goes sideways.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128101;</div>
+          <div class="feature-title">Multi-Operator Support</div>
+          <div class="feature-desc">Multiple team members can connect simultaneously — the TD fires cues, the slides operator follows along, the stream team sees what's coming. Everyone stays in sync without a walkie-talkie.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9989;</div>
+          <div class="feature-title">Pre-Show Checklist</div>
+          <div class="feature-desc">Automated pre-flight checks verify every connected system before doors open. StageMind tests OSC paths, pings integrations, and confirms hardware is responding — so you find out about problems before the audience does.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128202;</div>
+          <div class="feature-title">Show History &amp; Notes</div>
+          <div class="feature-desc">Every show is logged — cue timings, overrides, connection issues, and operator notes. Review what happened after any event, spot recurring problems, and build a living record of how your production runs.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-wrap">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">From build to broadcast</h2>
+      <p class="section-sub">StageMind is organized around a clear three-phase workflow — so your team is prepared before the show starts, not scrambling after it does.</p>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">01 &mdash; BUILD</div>
+          <div class="step-title">Design Your Rundown</div>
+          <div class="step-desc">Add every cue to the unified rundown — lighting looks, slide cues, stream transitions, audio triggers, video playback. Arrange, group, and annotate. When the rundown is right, every operator is reading from the same page.</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">02 &mdash; CHECK</div>
+          <div class="step-title">Let the AI Review It</div>
+          <div class="step-desc">Before going live, the AI Stage Manager analyzes your rundown and all connected systems. It surfaces conflicts, missing cues, and offline hardware — giving your team time to fix issues before they become problems in front of an audience.</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">03 &mdash; RUN</div>
+          <div class="step-title">Fire the Show</div>
+          <div class="step-desc">Switch to Live Mode and run the show from a single interface. Hit GO to fire each cue — StageMind sends the commands to every connected system simultaneously. Your operators watch it happen; they don't scramble to make it happen.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH SPECS -->
+  <section id="technical">
+    <div class="section-wrap">
+      <div class="section-label">Under the Hood</div>
+      <h2 class="section-title">Built for real production<br>environments.</h2>
+      <p class="section-sub">StageMind runs on your own hardware — on your local network, close to your gear. No cloud dependency, no latency, no single point of failure outside your control.</p>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h3>&#128421;&#65039; Infrastructure</h3>
+          <ul class="spec-list">
+            <li>Runs on any Node.js server on your local production network</li>
+            <li>WebSocket server for real-time multi-operator sync across devices</li>
+            <li>SQLite for rundown storage, show history, and configuration</li>
+            <li>Designed for dedicated Mac mini or small-form-factor PC in the booth</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>&#128279; Protocols &amp; Integrations</h3>
+          <ul class="spec-list">
+            <li>OSC (Open Sound Control) &mdash; lighting desks, QLab, Resolume, and custom hardware</li>
+            <li>MIDI &mdash; USB and network MIDI for instrument and effects control</li>
+            <li>ProPresenter 7 Network API &mdash; bi-directional slide control</li>
+            <li>OBS WebSocket, vMix API, and Blackmagic ATEM SDK for stream control</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>&#10024; AI Capabilities</h3>
+          <ul class="spec-list">
+            <li>Pre-show rundown analysis &mdash; conflict detection and missing cue identification</li>
+            <li>Connection health monitoring with actionable remediation suggestions</li>
+            <li>Cue timing recommendations based on historical show data</li>
+            <li>Pluggable AI backend &mdash; works with Claude API, OpenAI, or local models</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h3>&#9881;&#65039; Built With</h3>
+          <ul class="spec-list">
+            <li>Node.js + Express &mdash; lightweight server optimized for low-latency cue firing</li>
+            <li>Socket.IO &mdash; real-time multi-client sync for multi-operator workflows</li>
+            <li>better-sqlite3 &mdash; fast synchronous storage with no native dependencies</li>
+            <li>Vanilla JavaScript frontend &mdash; no framework, no build step, runs on any device in the booth</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div>
+        <div class="section-label">Get StageMind</div>
+        <h2 class="section-title">A Foundry Initiative product, built for live production teams.</h2>
+        <p class="section-sub">StageMind is an open-source project developed by the Foundry Initiative. If your church or event team needs a custom deployment, integration support, or help wiring it into your existing production stack — we're here.</p>
+        <a href="index.html#contact" class="btn btn-primary">Talk to the Foundry &#8594;</a>
+      </div>
+      <div class="cta-features">
+        <div class="cta-feature">
+          <div class="cta-feature-icon">&#128421;&#65039;</div>
+          <div class="cta-feature-text">
+            <h4>Runs On Your Network</h4>
+            <p>No cloud dependency. StageMind lives in your booth on your hardware — zero latency to your gear, zero risk of an internet outage taking down your show.</p>
+          </div>
+        </div>
+        <div class="cta-feature">
+          <div class="cta-feature-icon">&#128268;</div>
+          <div class="cta-feature-text">
+            <h4>Works With Your Existing Gear</h4>
+            <p>StageMind doesn't replace your lighting desk, your audio system, or your switcher — it connects them. Keep the hardware you know; add the coordination layer you've been missing.</p>
+          </div>
+        </div>
+        <div class="cta-feature">
+          <div class="cta-feature-icon">&#127807;</div>
+          <div class="cta-feature-text">
+            <h4>Open Source &amp; Extensible</h4>
+            <p>StageMind is fully open source. Add custom integrations, build your own cue types, or fork it for your specific production environment. The Foundry can help you get there.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">StageMind</div>
+        <div class="footer-sub">A Foundry Initiative Product</div>
+      </div>
+      <a href="index.html" class="footer-link">&#8592; Back to Foundry Initiative</a>
+      <div class="footer-copy">&copy; 2026 Foundry Initiative. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      const btn = document.getElementById('menuBtn');
+      const links = document.getElementById('navLinks');
+      if (!btn.contains(e.target) && !links.contains(e.target)) {
+        links.classList.remove('open');
+      }
+    });
+
+    function showScreen(name) {
+      document.querySelectorAll('.mockup-screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.mockup-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('screen-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

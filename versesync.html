@@ -365,11 +365,15 @@
     <div class="lyrics-col" id="trans-col">
       <div class="lyrics-col-hdr">
         <div class="lang-label"><div class="dot t"></div>Translation</div>
-        <select class="lang-sel" id="trans-lang"></select>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <select class="lang-sel" id="trans-lang"></select>
+          <button class="btn btn-secondary btn-sm" id="translate-btn" onclick="runAutoTranslate()" title="Auto-translate using in-browser AI (first run ~630 MB download, then cached)">✨ Auto-translate</button>
+        </div>
       </div>
       <textarea class="lyrics-ta" id="trans-lyrics"
         placeholder="[Verso 1]&#10;Gracia admirable, cuán dulce el son&#10;Que salvó a un pecador&#10;Perdido andaba, mas él me encontró&#10;Ciego, mas hoy puedo ver&#10;&#10;[Coro]&#10;Gracia admirable&#10;Cuán dulce el son&#10;Que salvó a un pecador"></textarea>
       <div class="lyrics-footer" id="trans-stats">0 sections detected</div>
+      <div id="translate-status" style="display:none;padding:7px 14px;font-size:11px;color:var(--accent);background:var(--surface2);border-top:1px solid var(--border);line-height:1.5;"></div>
     </div>
   </div>
 
@@ -492,6 +496,125 @@
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     AUTO-TRANSLATE  (transformers.js · NLLB-200-distilled-600M)
+     ══════════════════════════════════════════════════════════ -->
+<script type="module">
+import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3/dist/transformers.min.js';
+
+// NLLB-200 BCP-47 → Flores-200 code map (covers every language in the dropdown)
+const NLLB = {
+  'en':    'eng_Latn',
+  'es':    'spa_Latn',
+  'zh':    'zho_Hans',
+  'zh-TW': 'zho_Hant',
+  'ko':    'kor_Hang',
+  'pt':    'por_Latn',
+  'pt-BR': 'por_Latn',
+  'fr':    'fra_Latn',
+  'de':    'deu_Latn',
+  'tl':    'tgl_Latn',
+  'vi':    'vie_Latn',
+  'hi':    'hin_Deva',
+  'ml':    'mal_Mlym',
+  'te':    'tel_Telu',
+  'ta':    'tam_Taml',
+  'ar':    'arb_Arab',
+  'ru':    'rus_Cyrl',
+  'ja':    'jpn_Jpan',
+  'id':    'ind_Latn',
+  'sw':    'swh_Latn',
+  'it':    'ita_Latn',
+};
+
+const LABEL_RE = /^\[.+\]$|^\(.+\)$|^##?\s*.+$|^(?:verse\s*\d*|v\d+|chorus|ch|bridge|pre[-\s]?chorus|intro|outro|tag|vamp|refrain|interlude|hook|ending)[\s:]*$/i;
+
+let translator = null;
+
+window.runAutoTranslate = async function () {
+  const primaryText = document.getElementById('primary-lyrics').value.trim();
+  if (!primaryText) return toast('Enter primary lyrics first', 'warning');
+
+  const srcCode = document.getElementById('primary-lang').value;
+  const tgtCode = document.getElementById('trans-lang').value;
+  const src = NLLB[srcCode];
+  const tgt = NLLB[tgtCode];
+
+  if (!src) return toast(`Auto-translate doesn't support "${srcCode}" yet`, 'warning');
+  if (!tgt) return toast(`Auto-translate doesn't support "${tgtCode}" yet — select a specific language`, 'warning');
+  if (src === tgt) return toast('Source and target language are the same', 'warning');
+
+  const btn      = document.getElementById('translate-btn');
+  const statusEl = document.getElementById('translate-status');
+
+  btn.disabled        = true;
+  btn.textContent     = '⏳ Working…';
+  statusEl.style.display = 'block';
+  statusEl.textContent   = 'First run: downloading model (~630 MB, cached for future visits)…';
+
+  try {
+    if (!translator) {
+      translator = await pipeline(
+        'translation',
+        'Xenova/nllb-200-distilled-600M',
+        {
+          progress_callback: ({ status, loaded, total, file }) => {
+            if (status === 'downloading') {
+              const pct  = total ? Math.round((loaded / total) * 100) : '?';
+              const name = file ? file.split('/').pop() : '';
+              statusEl.textContent = `Downloading${name ? ' ' + name : ''}… ${pct}%`;
+            } else if (status === 'loading') {
+              statusEl.textContent = 'Loading model into memory…';
+            } else if (status === 'ready') {
+              statusEl.textContent = 'Model ready — starting translation…';
+            }
+          },
+        }
+      );
+    }
+
+    // Split on blank lines, translate section by section
+    const blocks = primaryText.split(/\n[ \t]*\n/).filter(b => b.trim());
+    const output = [];
+
+    for (let i = 0; i < blocks.length; i++) {
+      statusEl.textContent = `Translating section ${i + 1} of ${blocks.length}…`;
+
+      const lines     = blocks[i].split('\n').map(l => l.trimEnd());
+      const hasLabel  = LABEL_RE.test(lines[0] || '');
+      const labelLine = hasLabel ? lines[0] : null;
+      const bodyLines = hasLabel ? lines.slice(1) : lines;
+
+      const transLines = [];
+      for (const line of bodyLines) {
+        if (!line.trim()) { transLines.push(''); continue; }
+        const res = await translator(line, { src_lang: src, tgt_lang: tgt });
+        transLines.push(res[0]?.translation_text ?? line);
+      }
+
+      output.push(labelLine
+        ? [labelLine, ...transLines].join('\n')
+        : transLines.join('\n')
+      );
+    }
+
+    document.getElementById('trans-lyrics').value = output.join('\n\n');
+    refreshStats();
+    statusEl.innerHTML = '&#10003; Draft complete — <strong>please review before use.</strong> AI translation may miss poetic or liturgical nuance.';
+    toast('Auto-translation done — review before using!', 'success');
+
+  } catch (err) {
+    console.error('Translation error:', err);
+    toast('Translation failed: ' + (err.message || err), 'error');
+    statusEl.textContent = 'Error: ' + (err.message || 'Unknown error');
+    translator = null; // reset so next attempt retries
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = '✨ Auto-translate';
+  }
+};
+</script>
 
 <!-- ══════════════════════════════════════════════════════════
      JAVASCRIPT
